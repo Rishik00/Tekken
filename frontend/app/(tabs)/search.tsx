@@ -17,12 +17,12 @@ export default function SearchScreen() {
     interface Chat {
         text: string;
         sender: "user" | "bot";
-        videos?: { gloss: string; link: string }[]; // Updated type for videos
+        videos?: { word: string; link: string }[]; // Updated type for videos
     }
 
     const [message, setMessage] = useState("");
     const [videoUrls, setVideoUrls] = useState<
-        { gloss: string; link: string }[]
+        { word: string; link: string }[]
     >([]);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [chats, setChats] = useState<Chat[]>([]);
@@ -69,42 +69,45 @@ export default function SearchScreen() {
             setMessage("");
             scrollToBottom();
             setTimeout(async () => {
-                // const exampleReply = await fetch(`${API_BASE_URL}/get_output`, {
-                //     method: "POST",
-                //     headers: {
-                //         "Content-Type": "application/json",
-                //     },
-                //     body: JSON.stringify({
-                //         input_sequence: message,
-                //         uid: user?.uid,
-                //     }),
-                // }).then((response) => response.json());
-                // setChats((prevChats) => [
-                //     ...prevChats,
-                //     { text: exampleReply.response, sender: "bot" },
-                // ]);
+                const exampleReply = await fetch(`${API_BASE_URL}/get_links`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        input_sentence: message,
+                    }),
+                }).then((response) => response.json());
+                setChats((prevChats) => [
+                    ...prevChats,
+                    {
+                        text: "Here's your Translation",
+                        sender: "bot",
+                        videos: exampleReply.links,
+                    },
+                ]);
 
-                const exampleReply: Chat = {
-                    text: "Here's your sign language",
-                    sender: "bot",
-                    videos: [
-                        {
-                            gloss: "divorce",
-                            link: "https://drive.google.com/uc?export=download&id=13V8oczW3TKJZwylBeSWFNtozTKsFup1B",
-                        },
-                        {
-                            gloss: "disappear",
-                            link: "https://drive.google.com/uc?export=download&id=1Ca3Wdp2uDSrZ9WSP0mEUBwUGSeVOIAMw",
-                        },
-                    ],
-                };
-                setChats((prevChats) => [...prevChats, exampleReply]);
-                scrollToBottom(); // Scroll to bottom after receiving a response
+                // const exampleReply: Chat = {
+                //     text: "Here's your Translation",
+                //     sender: "bot",
+                //     videos: [
+                //         {
+                //             word: "divorce",
+                //             link: "https://drive.google.com/uc?export=download&id=13V8oczW3TKJZwylBeSWFNtozTKsFup1B",
+                //         },
+                //         {
+                //             word: "disappear",
+                //             link: "https://drive.google.com/uc?export=download&id=1Ca3Wdp2uDSrZ9WSP0mEUBwUGSeVOIAMw",
+                //         },
+                //     ],
+                // };
+                // setChats((prevChats) => [...prevChats, exampleReply]);
+                scrollToBottom();
             }, 1000);
         }
     };
 
-    const openModalWithVideos = (videos: { gloss: string; link: string }[]) => {
+    const openModalWithVideos = (videos: { word: string; link: string }[]) => {
         setVideoUrls(videos);
         setIsModalVisible(true);
     };
@@ -143,7 +146,7 @@ export default function SearchScreen() {
                                     onPress={() =>
                                         openModalWithVideos(
                                             chat.videos as {
-                                                gloss: string;
+                                                word: string;
                                                 link: string;
                                             }[]
                                         )

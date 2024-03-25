@@ -18,7 +18,7 @@ export default function ChatScreen() {
     const { user, signIn, signOut } = useAuth();
     const [message, setMessage] = useState("");
     const [videoUrls, setVideoUrls] = useState<
-        { gloss: string; link: string }[]
+        { word: string; link: string }[]
     >([]);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [chats, setChats] = useState<any[]>([]);
@@ -106,7 +106,7 @@ export default function ChatScreen() {
         }
     };
 
-    const openModalWithVideos = (videos: { gloss: string; link: string }[]) => {
+    const openModalWithVideos = (videos: { word: string; link: string }[]) => {
         setVideoUrls(videos);
         setIsModalVisible(true);
     };
@@ -145,7 +145,7 @@ export default function ChatScreen() {
                                     onPress={() =>
                                         openModalWithVideos(
                                             chat.videos as {
-                                                gloss: string;
+                                                word: string;
                                                 link: string;
                                             }[]
                                         )

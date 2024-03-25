@@ -5,7 +5,7 @@ import { Video, AVPlaybackStatus, ResizeMode } from "expo-av";
 interface VideoPlayerModalProps {
     visible: boolean;
     onClose: () => void;
-    videos: { gloss: string; link: string }[]; // Updated type for videos
+    videos: { word: string; link: string }[]; // Updated type for videos
 }
 
 const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
@@ -80,9 +80,9 @@ const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                                 className="overflow-hidden rounded-lg"
                             />
                             <Text className="mt-2 text-center text-gray-600 dark:text-gray-400">
-                                {videos[currentIndex].gloss}
+                                {videos[currentIndex].word}
                             </Text>
-                            {/* Display gloss beneath the video */}
+                            {/* Display word beneath the video */}
                         </>
                     ) : (
                         <Text>No videos available</Text>
