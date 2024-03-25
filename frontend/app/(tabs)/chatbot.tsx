@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Image, Pressable, ScrollView, TextInput } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Text, View } from "@/components/Themed";
@@ -10,16 +10,34 @@ export default function ChatScreen() {
     const [message, setMessage] = useState("");
     const [videoUrls, setVideoUrls] = useState<string[]>([]);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-    interface Chat {
-        text: string;
-        sender: "user" | "bot";
-        videos?: string[];
-    }
+    const [chats, setChats] = useState<any[]>([]); // Modified to any[] to accommodate Firebase data structure
+    const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+    // Function to fetch chat history from backend
+    // Function to fetch chat history from backend
+    const fetchChatHistory = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/history`, {
+                method: "POST", // Change to POST method
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ uid: user?.uid }), // Include user ID in the request body
+            });
+            const data = await response.json();
+            setChats(data.response);
+            console.log("Chat history fetched:", data.response);
+        } catch (error) {
+            console.error("Error fetching chat history:", error);
+        }
+    };
 
-    const [chats, setChats] = useState<Chat[]>([]);
+    useEffect(() => {
+        fetchChatHistory();
+    }, []); // Fetch chat history on component mount
 
     // Function to handle sending a message
-    const sendMessage = () => {
+    // Function to handle sending a message
+    const sendMessage = async () => {
         // Check if message is not empty
         if (message.trim() !== "") {
             // For demonstration, let's just append the message to chats
@@ -30,17 +48,22 @@ export default function ChatScreen() {
             // Reset message input
             setMessage("");
             // Simulate reply from backend (for demonstration)
-            setTimeout(() => {
+            setTimeout(async () => {
                 // Example reply from backend with videos
-                const exampleReply: Chat = {
-                    text: "Example reply from backend",
-                    sender: "bot",
-                    videos: [
-                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-                    ],
-                };
-                setChats((prevChats) => [...prevChats, exampleReply]);
+                const exampleReply = await fetch(`${API_BASE_URL}/get_output`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        input_sequence: message,
+                        uid: user?.uid,
+                    }), // Include user ID in the request body
+                }).then((response) => response.json());
+                setChats((prevChats) => [
+                    ...prevChats,
+                    { text: exampleReply.response, sender: "bot" },
+                ]);
             }, 1000);
         }
     };
