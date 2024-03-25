@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Pressable, ScrollView, TextInput } from "react-native";
+import { Button, Image, Pressable, ScrollView, TextInput } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/AuthProvider";
@@ -78,8 +78,13 @@ export default function ChatScreen() {
                                 onPress={() =>
                                     openModalWithVideos(chat.videos as string[])
                                 }
+                                className="flex flex-row items-center justify-center p-2 mt-2 rounded-lg bg-slate-200 dark:bg-slate-400"
                             >
-                                <Text style={{ color: "blue" }}>
+                                <Image
+                                    source={require("@/assets/images/video-player.png")}
+                                    className="w-16 h-16"
+                                />
+                                <Text className="ml-2 text-center text-blue-500 dark:text-blue-800">
                                     View Videos
                                 </Text>
                             </Pressable>

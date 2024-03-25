@@ -105,7 +105,7 @@ const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                         </View>
                         <Pressable
                             onPress={onClose}
-                            className="w-full p-2 mt-2 rounded-md bg-slate-50"
+                            className="w-full p-2 mt-2 rounded-md bg-slate-300 dark:bg-slate-500"
                         >
                             <Text className="text-center ">Close</Text>
                         </Pressable>
