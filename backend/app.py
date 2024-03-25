@@ -21,8 +21,21 @@ def get_output():
 def get_chat_history():
     # Get chat history from gemini_model
     history = gemini_model.get_chat_history()
-    # Return chat history as JSON
-    return jsonify({'response': history})
+
+    # Convert history to a JSON-serializable format
+    serialized_history = []
+    for item in history:
+        # Iterate over parts of the message
+        message_text = ""
+        for part in item.parts:
+            # Append text from each part to the message_text variable
+            message_text += part.text + "\n"
+        
+        # Append the combined message text to the serialized history
+        serialized_history.append({'text': message_text, 'role': item.role})
+
+    # Return serialized history as JSON
+    return jsonify({'response': serialized_history})
 
 if __name__ == '__main__':
     app.run(debug=True)
