@@ -88,6 +88,27 @@ export default function TabLayout() {
                     ),
                 }}
             />
+
+            <Tabs.Screen
+                name="search"
+                options={{
+                    title: "Search",
+                    tabBarIcon: ({ color }) => (
+                        <TabBarIcon name="search" color={color} />
+                    ),
+
+                    headerRight: () => (
+                        <Pressable
+                            onPress={() => signOut(getAuth())}
+                            className="px-3 py-2 mr-2 bg-blue-500 rounded-md "
+                        >
+                            <Text className="text-center text-white">
+                                Sign Out
+                            </Text>
+                        </Pressable>
+                    ),
+                }}
+            />
         </Tabs>
     );
 }
