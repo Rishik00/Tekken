@@ -5,7 +5,7 @@ import { Video, AVPlaybackStatus, ResizeMode } from "expo-av";
 interface VideoPlayerModalProps {
     visible: boolean;
     onClose: () => void;
-    videos: string[];
+    videos: { gloss: string; link: string }[]; // Updated type for videos
 }
 
 const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
@@ -29,8 +29,7 @@ const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                 setCurrentIndex((prevIndex) => prevIndex + 1);
                 setIsPlaying(true); // Ensure the next video starts playing automatically
             } else {
-                // Close modal if there are no more videos
-                onClose();
+                // onClose();
             }
         }
     };
@@ -56,7 +55,7 @@ const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
             visible={visible}
             onRequestClose={onClose}
         >
-            <View className="flex flex-col items-center justify-center h-full  bg-[#00000090]">
+            <View className="flex flex-col items-center justify-center h-full bg-[#00000090]">
                 <View className="w-11/12 p-4 rounded-lg bg-slate-200 dark:bg-slate-800">
                     <View className="flex flex-row items-center w-full bg-transparent ">
                         <View className="flex-grow h-[1px] bg-slate-300 dark:bg-slate-600 ml-2"></View>
@@ -65,17 +64,29 @@ const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                         </Text>
                         <View className="flex-grow h-[1px] bg-slate-300 dark:bg-slate-600 mr-2"></View>
                     </View>
-                    <Video
-                        ref={videoRef}
-                        style={{ width: 300, height: 200 }}
-                        source={{ uri: videos[currentIndex] }}
-                        resizeMode={ResizeMode.CONTAIN}
-                        isLooping={false}
-                        shouldPlay={isPlaying}
-                        useNativeControls={true}
-                        onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-                        className="overflow-hidden rounded-lg"
-                    />
+                    {videos.length > 0 && currentIndex < videos.length ? ( // Check if videos array is not empty and currentIndex is within bounds
+                        <>
+                            <Video
+                                ref={videoRef}
+                                style={{ width: 300, height: 200 }}
+                                source={{ uri: videos[currentIndex].link }}
+                                resizeMode={ResizeMode.CONTAIN}
+                                isLooping={false}
+                                shouldPlay={isPlaying}
+                                useNativeControls={true}
+                                onPlaybackStatusUpdate={
+                                    handlePlaybackStatusUpdate
+                                }
+                                className="overflow-hidden rounded-lg"
+                            />
+                            <Text className="mt-2 text-center text-gray-600 dark:text-gray-400">
+                                {videos[currentIndex].gloss}
+                            </Text>
+                            {/* Display gloss beneath the video */}
+                        </>
+                    ) : (
+                        <Text>No videos available</Text>
+                    )}
                     <View className="flex flex-col ">
                         <View className="flex flex-row justify-between mt-2">
                             <Pressable

@@ -17,7 +17,9 @@ import VideoPlayerModal from "@/components/VideoPlayerModal";
 export default function ChatScreen() {
     const { user, signIn, signOut } = useAuth();
     const [message, setMessage] = useState("");
-    const [videoUrls, setVideoUrls] = useState<string[]>([]);
+    const [videoUrls, setVideoUrls] = useState<
+        { gloss: string; link: string }[]
+    >([]);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [chats, setChats] = useState<any[]>([]);
     const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
@@ -104,7 +106,7 @@ export default function ChatScreen() {
         }
     };
 
-    const openModalWithVideos = (videos: string[]) => {
+    const openModalWithVideos = (videos: { gloss: string; link: string }[]) => {
         setVideoUrls(videos);
         setIsModalVisible(true);
     };
@@ -142,7 +144,10 @@ export default function ChatScreen() {
                                 <Pressable
                                     onPress={() =>
                                         openModalWithVideos(
-                                            chat.videos as string[]
+                                            chat.videos as {
+                                                gloss: string;
+                                                link: string;
+                                            }[]
                                         )
                                     }
                                     className="flex flex-row items-center justify-center p-2 mt-2 rounded-lg bg-slate-200 dark:bg-slate-400"
