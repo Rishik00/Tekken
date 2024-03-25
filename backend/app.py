@@ -4,6 +4,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from gemini import GetGeminiOutput
+import json
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -18,7 +19,27 @@ db = firestore.client()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 gemini_model = GetGeminiOutput(API_KEY=GOOGLE_API_KEY, max_tokens=3000, temperature=0.7)
 
-# Function to push a chat message to Firebase under the user's chats array
+
+# Load the JSON file
+with open('result.json', 'r') as json_file:
+    data = json.load(json_file)
+
+# Create a dictionary to store gloss-link mappings
+gloss_link_mapping = {item['gloss']: item['link'] for item in data}
+
+# Function to get links corresponding to words in a sentence
+def get_links_for_sentence(sentence):
+    words = sentence.split()
+    result_objects = []
+    for word in words:
+        # Check if the word's gloss exists in the mapping
+        if word in gloss_link_mapping:
+            result_objects.append({
+                'word': word,
+                'link': gloss_link_mapping[word]
+            })
+    return result_objects
+
 # Function to push a chat message to Firebase under the user's chats array
 def push_chat_message(user_id, message, sender):
     user_ref = db.collection('Users').document(user_id)
@@ -69,6 +90,12 @@ def fetch_chat_history():
     # Return chat history as JSON
     return jsonify({'response': history})
 
+def get_links():
+    input_sentence = request.json.get('input_sentence', '')
+    # Get links corresponding to words in the input sentence
+    result_links = get_links_for_sentence(input_sentence)
+    # Return the list of objects as a JSON string
+    return jsonify({'links': result_links})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
