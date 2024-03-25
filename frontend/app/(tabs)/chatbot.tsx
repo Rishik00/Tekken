@@ -3,13 +3,17 @@ import { Button, Pressable, ScrollView, TextInput } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/AuthProvider";
+import VideoPlayerModal from "@/components/VideoPlayerModal";
 
 export default function ChatScreen() {
     const { user, signIn, signOut } = useAuth();
     const [message, setMessage] = useState("");
+    const [videoUrls, setVideoUrls] = useState<string[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     interface Chat {
         text: string;
         sender: "user" | "bot";
+        videos?: string[];
     }
 
     const [chats, setChats] = useState<Chat[]>([]);
@@ -27,12 +31,26 @@ export default function ChatScreen() {
             setMessage("");
             // Simulate reply from backend (for demonstration)
             setTimeout(() => {
-                setChats((prevChats) => [
-                    ...prevChats,
-                    { text: "Example reply from backend", sender: "bot" },
-                ]);
+                // Example reply from backend with videos
+                const exampleReply: Chat = {
+                    text: "Example reply from backend",
+                    sender: "bot",
+                    videos: [
+                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                    ],
+                };
+                setChats((prevChats) => [...prevChats, exampleReply]);
             }, 1000);
         }
+    };
+
+    const openModalWithVideos = (videos: string[]) => {
+        setVideoUrls(videos);
+        setIsModalVisible(true);
+    };
+    const closeModal = () => {
+        setIsModalVisible(false);
     };
 
     return (
@@ -55,6 +73,17 @@ export default function ChatScreen() {
                         } rounded-lg`}
                     >
                         <Text>{chat.text}</Text>
+                        {chat.videos !== undefined && (
+                            <Pressable
+                                onPress={() =>
+                                    openModalWithVideos(chat.videos as string[])
+                                }
+                            >
+                                <Text style={{ color: "blue" }}>
+                                    View Videos
+                                </Text>
+                            </Pressable>
+                        )}
                     </View>
                 ))}
             </ScrollView>
@@ -73,6 +102,11 @@ export default function ChatScreen() {
                     <FontAwesome name="arrow-right" className="" size={20} />
                 </Pressable>
             </View>
+            <VideoPlayerModal
+                visible={isModalVisible}
+                onClose={closeModal}
+                videos={videoUrls}
+            />
         </View>
     );
 }
