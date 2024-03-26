@@ -8,6 +8,8 @@ from firebase_admin import firestore
 from gemini import GetGeminiOutput
 import json
 from dotenv import load_dotenv
+from datetime import datetime
+
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -47,16 +49,17 @@ def get_links_for_sentence(sentence):
 def push_chat_message(user_id, message, sender):
     user_ref = db.collection('Users').document(user_id)
     user_data = user_ref.get().to_dict()
+    timestamp = datetime.now()
     if user_data is None:
         # Create the user document if it doesn't exist
         user_ref.set({
-            'chats': [{'text': message, 'sender': sender}]
+            'chats': [{'text': message, 'sender': sender, 'timestamp': timestamp}]
         })
     else:
         # Update the existing user document to add the new chat message
         user_ref.update({
 
-            'chats': firestore.ArrayUnion([{'text': message, 'sender': sender}])
+            'chats': firestore.ArrayUnion([{'text': message, 'sender': sender, 'timestamp': timestamp}])
         })
         print('Updated chat history for user:', message)
 
@@ -65,7 +68,12 @@ def get_chat_history(user_id):
     user_ref = db.collection('Users').document(user_id)
     user_data = user_ref.get().to_dict()
     if user_data and 'chats' in user_data:
-        return user_data['chats']
+        # Exclude timestamps and handle missing 'sender' field
+        chat_history = []
+        for message in user_data['chats']:
+            chat_message = {'text': message.get('text', ''), 'sender': message.get('sender', 'Unknown')}
+            chat_history.append(chat_message)
+        return chat_history
     else:
         return []
 
