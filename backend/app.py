@@ -36,6 +36,15 @@ gemini_model = GetGeminiOutput(API_KEY=GOOGLE_API_KEY, max_tokens=3000, temperat
 with open('result.json', 'r') as json_file:
     data = json.load(json_file)
 
+with open('family_links.json', 'r') as family_file:
+    family_links_data = json.load(family_file)
+
+with open('common_links.json', 'r') as common_file:
+    common_links_data = json.load(common_file)
+
+with open('question_links.json', 'r') as question_file:
+    question_links_data = json.load(question_file)
+
 # Create a dictionary to store gloss-link mappings
 gloss_link_mapping = {item['gloss']: item['link'] for item in data}
 
@@ -178,3 +187,17 @@ async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = Fil
         shutil.rmtree(video_dir)
 
     return JSONResponse(content={"message": "Video received and processing started.", "labels": translated_text, "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
+# Endpoint to serve family course JSON content
+@app.get("/family_course")
+def get_family_course():
+    return family_links_data
+
+# Endpoint to serve common course JSON content
+@app.get("/common_course")
+def get_common_course():
+    return common_links_data
+
+# Endpoint to serve question course JSON content
+@app.get("/question_course")
+def get_question_course():
+    return question_links_data
