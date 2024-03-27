@@ -188,16 +188,16 @@ async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = Fil
 
     return JSONResponse(content={"message": "Video received and processing started.", "labels": translated_text, "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
 # Endpoint to serve family course JSON content
-@app.get("/family_course")
-def get_family_course():
-    return family_links_data
+# @app.get("/family_course")
+# def get_family_course():
+#     return family_links_data
 
-# Endpoint to serve common course JSON content
-@app.get("/common_course")
-def get_common_course():
-    return common_links_data
+# # Endpoint to serve common course JSON content
+# @app.get("/common_course")
+# def get_common_course():
+#     return common_links_data
 
-# Endpoint to serve question course JSON content
-@app.get("/question_course")
-def get_question_course():
-    return question_links_data
+# # Endpoint to serve question course JSON content
+# @app.get("/question_course")
+# def get_question_course():
+#     return question_links_data

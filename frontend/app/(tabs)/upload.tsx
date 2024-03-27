@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Image, Pressable, View } from "react-native";
+import { Button, Image, Pressable, ScrollView, View } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { Text } from "@/components/Themed";
@@ -10,12 +10,13 @@ const DocPicker = () => {
     const [filename, setFilename] = useState<string>();
     const [isDocPickPressed, setIsDocPickPressed] = useState(false);
     const [isUploadPressed, setIsUploadPressed] = useState(false);
-    const [translatedText, setTranslatedText] = useState<string>("cousin");
+    const [translatedText, setTranslatedText] = useState<string>("");
     const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
     const resetDocument = () => {
         setDoc(undefined);
         setFilename(undefined);
+        setTranslatedText("");
     };
     const pickDocument = async () => {
         let result = await DocumentPicker.getDocumentAsync({
@@ -123,12 +124,19 @@ const DocPicker = () => {
             )}
 
             {translatedText !== "" && (
-                <View className="flex flex-row items-center w-4/5 mt-6 bg-transparent ">
-                    <View className="flex-grow h-[1px] bg-slate-300 dark:bg-slate-600 ml-2"></View>
-                    <Text className="mx-2 text-sm tracking-wider text-center">
-                        Translated Text
-                    </Text>
-                    <View className="flex-grow h-[1px]  bg-slate-300 dark:bg-slate-600 mr-2"></View>
+                <View className="flex flex-col items-center w-full">
+                    <View className="flex flex-row items-center w-4/5 mt-6 bg-transparent ">
+                        <View className="flex-grow h-[1px] bg-slate-300 dark:bg-slate-600 ml-2"></View>
+                        <Text className="mx-2 text-sm tracking-wider text-center">
+                            Translated Text
+                        </Text>
+                        <View className="flex-grow h-[1px]  bg-slate-300 dark:bg-slate-600 mr-2"></View>
+                    </View>
+                    <View className="w-4/5 p-2 px-4 mt-4 rounded-lg shadow-lg max-h-72 bg-slate-50 dark:bg-slate-600">
+                        <ScrollView>
+                            <Text>{translatedText}</Text>
+                        </ScrollView>
+                    </View>
                 </View>
             )}
 
