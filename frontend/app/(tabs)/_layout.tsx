@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import { Pressable, Text } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { router } from "expo-router";
 
 import Colors from "@/constants/Colors";
@@ -46,6 +46,19 @@ export default function TabLayout() {
                     tabBarIcon: ({ color }) => (
                         <TabBarIcon name="code" color={color} />
                     ),
+
+                    headerLeft: () => (
+                        <Link href="/landing">
+                            <View className="pl-2">
+                                <FontAwesome
+                                    name="home"
+                                    className=""
+                                    size={25}
+                                    color="#3B82F6"
+                                />
+                            </View>
+                        </Link>
+                    ),
                     headerRight: () => (
                         <Pressable
                             onPress={() => signOut(getAuth())}
@@ -58,12 +71,36 @@ export default function TabLayout() {
                     ),
                 }}
             />
+
             <Tabs.Screen
-                name="two"
+                name="upload"
                 options={{
-                    title: "Tab Two",
+                    title: "Upload",
                     tabBarIcon: ({ color }) => (
-                        <TabBarIcon name="code" color={color} />
+                        <TabBarIcon name="upload" color={color} />
+                    ),
+                    headerLeft: () => (
+                        <Link href="/landing">
+                            <View className="pl-2">
+                                <FontAwesome
+                                    name="home"
+                                    className=""
+                                    size={25}
+                                    color="#3B82F6"
+                                />
+                            </View>
+                        </Link>
+                    ),
+
+                    headerRight: () => (
+                        <Pressable
+                            onPress={() => signOut(getAuth())}
+                            className="px-3 py-2 mr-2 bg-blue-500 rounded-md "
+                        >
+                            <Text className="text-center text-white">
+                                Sign Out
+                            </Text>
+                        </Pressable>
                     ),
                 }}
             />
@@ -74,6 +111,19 @@ export default function TabLayout() {
                     title: "Chat Bot",
                     tabBarIcon: ({ color }) => (
                         <TabBarIcon name="laptop" color={color} />
+                    ),
+
+                    headerLeft: () => (
+                        <Link href="/landing">
+                            <View className="pl-2">
+                                <FontAwesome
+                                    name="home"
+                                    className=""
+                                    size={25}
+                                    color="#3B82F6"
+                                />
+                            </View>
+                        </Link>
                     ),
 
                     headerRight: () => (
@@ -95,6 +145,19 @@ export default function TabLayout() {
                     title: "Search",
                     tabBarIcon: ({ color }) => (
                         <TabBarIcon name="search" color={color} />
+                    ),
+
+                    headerLeft: () => (
+                        <Link href="/landing">
+                            <View className="pl-2">
+                                <FontAwesome
+                                    name="home"
+                                    className=""
+                                    size={25}
+                                    color="#3B82F6"
+                                />
+                            </View>
+                        </Link>
                     ),
 
                     headerRight: () => (

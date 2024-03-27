@@ -169,10 +169,12 @@ async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = Fil
         no_show=True
     )
 
+    translated_text = " ".join(labels)
+
     processing_time = perf_counter() - processing_start_time
     print(f"Video processing time: {processing_time:.2f} seconds")
 
     if os.path.exists(video_dir):
         shutil.rmtree(video_dir)
 
-    return JSONResponse(content={"message": "Video received and processing started.", "labels": list(labels), "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
+    return JSONResponse(content={"message": "Video received and processing started.", "labels": translated_text, "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
