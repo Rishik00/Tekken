@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, File, UploadFile, BackgroundTasks
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List
 import os
@@ -9,6 +10,12 @@ from gemini import GetGeminiOutput
 import json
 from dotenv import load_dotenv
 from datetime import datetime
+import shutil
+from time import perf_counter
+
+# This calls the OpenVino Model
+# Do no delete at all costs 💀💀💀
+from intel.toolkit.gesture_function import run_gesture_recognition
 
 
 # Initialize FastAPI app
@@ -118,3 +125,54 @@ def get_links(data: dict):
 @app.get("/test")
 def test():
     return {"message": "Hello World"}
+
+
+
+# To save Videos in Local Store
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+video_dir = os.path.join(BASE_DIR, "temp_videos")
+
+
+# This route allows us to work 
+@app.post("/upload-video-file/")
+async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+    
+    if(not os.path.exists(video_dir)):
+        os.makedirs(video_dir, exist_ok=True)
+    
+    video_path = os.path.join(video_dir, file.filename)
+    
+    start_time = perf_counter()
+
+    
+    with open(video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    upload_time = perf_counter() - start_time
+    print(f"File upload and save time: {upload_time:.2f} seconds")
+
+    
+    action_model = os.path.join(BASE_DIR, "intel", "asl-recognition-0004", "FP16", "asl-recognition-0004.xml")
+    detection_model = os.path.join(BASE_DIR, "intel", "person-detection-asl-0001", "FP16", "person-detection-asl-0001.xml")
+    class_map_path = os.path.join(BASE_DIR, "intel", "msasl100.json")
+    device = "CPU"  
+
+    
+    processing_start_time = perf_counter()
+    
+    labels = run_gesture_recognition(
+        action_model,
+        detection_model,
+        video_path,
+        class_map_path=class_map_path,
+        device=device,
+        no_show=True
+    )
+
+    processing_time = perf_counter() - processing_start_time
+    print(f"Video processing time: {processing_time:.2f} seconds")
+
+    if os.path.exists(video_dir):
+        shutil.rmtree(video_dir)
+
+    return JSONResponse(content={"message": "Video received and processing started.", "labels": list(labels), "upload-time":upload_time, "performance_time": processing_time}, status_code=200)

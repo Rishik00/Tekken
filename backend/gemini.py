@@ -1,6 +1,6 @@
-import google.generativeai as genai
 import json
 from IPython.display import Markdown, display
+import google.generativeai as genai
 
 class GetGeminiOutput:
     def __init__(self, API_KEY: str, max_tokens: int = 3000, temperature: int = 0.7) -> None:
