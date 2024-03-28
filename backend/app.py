@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List
 import os
+from NeuralChat7B import NeuralNet7B
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -20,6 +21,8 @@ from intel.toolkit.gesture_function import run_gesture_recognition
 
 # Initialize FastAPI app
 app = FastAPI()
+# Initialize NeuralNet
+nn = NeuralNet7B()
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("./firebase-admin.json")
@@ -106,12 +109,22 @@ class LinksResponse(BaseModel):
 def start():
     return gemini_model.starting_statement()
 
-@app.post('/get_output')
+@app.post('/get_gemini_output')
 def get_output(data: InputData):
     response = gemini_model.answers(data.input_sequence)
     # Push user message to Firebase under the user's chats array
     push_chat_message(data.uid, data.input_sequence, 'user')
     push_chat_message(data.uid, response, 'bot')
+    # Return response as JSON
+    return {'response': response}
+
+@app.post('/get_intel_output')
+def get_intel_output(data: InputData):
+    response = nn.predict(data.input_sequence)
+    # Push user message to Firebase under the user's chats array
+    # push_chat_message(data.uid, data.input_sequence, 'user')
+    # push_chat_message(data.uid, response, 'neural_bot')
+    
     # Return response as JSON
     return {'response': response}
 
@@ -134,7 +147,6 @@ def get_links(data: dict):
 @app.get("/test")
 def test():
     return {"message": "Hello World"}
-
 
 
 # To save Videos in Local Store
