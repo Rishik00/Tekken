@@ -53,6 +53,10 @@ gloss_link_mapping = {item['gloss']: item['link'] for item in data}
 
 # Function to get links corresponding to words in a sentence
 def get_links_for_sentence(sentence):
+    """
+    This function takes a sentence as input and returns a list of dictionaries containing words and their corresponding links from the gloss_link_mapping.
+    """
+
     words = [word.lower() for word in sentence.split()]
     result_objects = []
     for word in words:
@@ -66,6 +70,21 @@ def get_links_for_sentence(sentence):
 
 # Function to push a chat message to Firebase under the user's chats array
 def push_chat_message(user_id, message, sender):
+    """
+    Pushes a chat message to the Firestore database for a given user.
+
+    Parameters:
+        user_id (str): The ID of the user.
+        message (str): The text of the chat message.
+        sender (str): The sender of the chat message.
+
+    Returns:
+        None
+
+    Raises:
+        None
+    """
+
     user_ref = db.collection('Users').document(user_id)
     user_data = user_ref.get().to_dict()
     timestamp = datetime.now()
@@ -84,6 +103,15 @@ def push_chat_message(user_id, message, sender):
 
 # Function to retrieve chat history from Firebase for a specific user
 def get_chat_history(user_id):
+    """
+    Retrieves the chat history for a given user from the database.
+
+    Parameters:
+        user_id (str): The unique identifier of the user.
+
+    Returns:
+        list: A list of dictionaries representing the chat history. Each dictionary contains the 'text' and 'sender' fields of a chat message. If the user does not have a chat history or the 'chats' field is missing in the user data, an empty list is returned.
+    """
     user_ref = db.collection('Users').document(user_id)
     user_data = user_ref.get().to_dict()
     if user_data and 'chats' in user_data:
@@ -109,6 +137,7 @@ class LinksResponse(BaseModel):
 def start():
     return gemini_model.starting_statement()
 
+# Gemini's output route
 @app.post('/get_gemini_output')
 def get_output(data: InputData):
     response = gemini_model.answers(data.input_sequence)
@@ -118,6 +147,7 @@ def get_output(data: InputData):
     # Return response as JSON
     return {'response': response}
 
+# Intel's Neural Chat 7B output route
 @app.post('/get_intel_output')
 def get_intel_output(data: InputData):
     response = nn.predict(data.input_sequence)
@@ -128,6 +158,8 @@ def get_intel_output(data: InputData):
     # Return response as JSON
     return {'response': response}
 
+
+# History route
 @app.post('/history')
 async def fetch_chat_history(request: Request):
     data = await request.json()
@@ -137,6 +169,8 @@ async def fetch_chat_history(request: Request):
     # Return chat history as JSON
     return {'response': history}
 
+
+# Get links route
 @app.post('/get_links')
 def get_links(data: dict):
     input_sentence = data.get('input_sentence', '')
@@ -157,6 +191,26 @@ video_dir = os.path.join(BASE_DIR, "temp_videos")
 # This route allows us to work 
 @app.post("/upload-video-file/")
 async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+    """
+    Uploads a video file and performs gesture recognition on it.
+
+    Parameters:
+        - background_tasks (BackgroundTasks): A background tasks object.
+        - file (UploadFile): The video file to be uploaded.
+
+    Returns:
+        - JSONResponse: A JSON response containing the message, labels, upload time, and processing time.
+
+    Raises:
+        - None
+
+    Notes:
+        - The video file is saved in the `video_dir` directory.
+        - The gesture recognition models are located in the `BASE_DIR` directory.
+        - The class map file is located in the `BASE_DIR` directory.
+        - The video processing is performed using the CPU device.
+        - The video directory is deleted after processing.
+    """
     
     if(not os.path.exists(video_dir)):
         os.makedirs(video_dir, exist_ok=True)
@@ -199,6 +253,46 @@ async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = Fil
         shutil.rmtree(video_dir)
 
     return JSONResponse(content={"message": "Video received and processing started.", "labels": translated_text, "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
+
+@app.post("/assess-sign-language/")
+async def assess_sign_language(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+    """
+    A description of the entire function, its parameters, and its return types.
+    """
+    # Define the expected word for assessment
+    expected_word = "father"
+    
+    # Create a temporary directory to save the uploaded video
+    temp_video_dir = "temp_uploaded_videos"
+    os.makedirs(temp_video_dir, exist_ok=True)
+    video_path = os.path.join(temp_video_dir, file.filename)
+
+    # Save the uploaded video file
+    with open(video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # Run gesture recognition on the uploaded video
+    labels = run_gesture_recognition(
+        action_model,
+        detection_model,
+        video_path,
+        class_map_path=class_map_path,
+        device=device,
+        no_show=True
+    )
+
+    # Check if the expected word is found in the recognized labels
+    if expected_word in labels:
+        result = "You've passed!"
+    else:
+        result = "Sorry, you did not sign the correct word."
+
+    # Delete the temporary video directory
+    if os.path.exists(temp_video_dir):
+        shutil.rmtree(temp_video_dir)
+
+    return JSONResponse(content={"message": result}, status_code=200)
+
 # Endpoint to serve family course JSON content
 # @app.get("/family_course")
 # def get_family_course():

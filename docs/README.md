@@ -1,39 +1,42 @@
+# Intel's AI Hackathon
+# Team Name: Tekken
 
-# Saradhi AI: Sign Language Learning Mobile App 🤟
+# Project Description: 
+## Saradhi AI: Sign Language Learning Mobile App 🤟
 
-Welcome to Saradhi AI, your ultimate companion for learning and mastering sign language made possible through Intel. Saradhi AI combines cutting-edge technology with comprehensive learning resources to make sign language accessible to everyone. With real-time sign language translation, informative courses, a searchable database, and a helpful chatbot, Saradhi AI is your one-stop solution for sign language learning.
+Welcome to Saradhi AI, your ultimate companion for learning and mastering sign language made possible through Intel. Saradhi AI combines cutting-edge technology with comprehensive learning resources to make sign language accessible to everyone. With real-time sign language translation, informative courses, a searchable database, and a helpful assistant, Saradhi AI is your one-stop solution for sign language learning.
 
 
 ## Demonstration of the Project
 
-  
-  
+## Installation and configuration steps:
+1. clone the repository to your local environment: 
+`git clone my-repo-name`
+2. install the dependencies:
+`pip install requirements.txt`
+3. Start the development server using uvicorn: 
+`uvicorn app:app --reload`
+4. Start the front end after configuring the environment settings
+`npm start` 
+
 
 ## Features
 
-  
-
  1. Real-time Sign Language Translation 🔄
- 2.  Sign Language Translation Through Video Upload 🎥
- 3. Informative Course on Learning Sign Language 📚✍️
- 4. Search Engine for Querying Specific Words in ASL 🔎📝
- 5. Chatbot for Clearing Basic Doubts About ASL 💬🤖
-  
+ 2.  Sign Language Translation Through Video Upload.
+ 3. Informative Course on Learning Sign Language.
+ 4. Search Engine for Querying Specific Words in ASL 🔎
+ 5. Chatbot for Clearing Basic Doubts About American Sign language 💬🤖
 
-
-
-  
-  
 
 ## Flow Diagram 🔄📊
 
 The flow diagram illustrates the sequential steps and interactions within Saradhi AI, ensuring a smooth and efficient workflow. Let's delve into the key components:
 
-  
 
 ### User Interaction 🤳🗣️:
 
-Users interact with Saradhi AI through the mobile app, providing input via text, voice, or video.
+Users interact with Saradhi AI through the mobile app, providing input via text, voice, or video. 
 
   
 
@@ -41,7 +44,8 @@ Users interact with Saradhi AI through the mobile app, providing input via text,
 
 Saradhi AI's real-time sign language translation feature instantly converts sign language gestures captured by the device's camera into understandable text, providing seamless communication assistance.
 
-  
+
+
 
 ### Sign Language Translation Through Video Upload 🎥🔍:
 
@@ -57,15 +61,13 @@ The search engine allows users to query specific words or phrases in American Si
 
   
 
-### Chatbot for Clearing Basic Doubts About ASL 💬🤖:
+### Chatbot for Clearing Basic Doubts About ASL:
 
 Saradhi AI's integrated chatbot provides instant assistance and clears doubts about sign language. Powered by Intel-Hugging Face Neural Chat 7B model, the chatbot offers intelligent responses to user queries, ensuring a smooth learning experience.
 
   
 
 ## Technologies Used
-
-  
 
 - **Frontend**: Developed using **React Native** for a seamless mobile user interface. React Native is an open-source UI software framework created by Meta Platforms, Inc. It is used to develop applications for Android, Android TV, iOS, macOS, tvOS, Web, Windows and UWP by enabling developers to use the React framework along with native platform capabilities.
 
@@ -94,17 +96,13 @@ A human gesture recognition model for the American Sign Language (ASL) recogniti
 	4.  **person-detection-asl-0001**:
 This is a person detector for the ASL Recognition scenario. It is based on ShuffleNetV2-like backbone that includes depth-wise convolutions to reduce the amount of computation for the 3x3 convolution block and FCOS head.
 
-- **Chatbot**: Intel-Hugging Face Neural Chat 7B model provides intelligent responses to user queries.
-
+- **Chatbot**: The two chatbots that are available and ready for use are **Gemini-pro from Google** and **NeuralChat 7B from Intel**. Apart from this many other chatbots have been tested such as Mistral, Zephyr, bert-large (**from intel's extension for transformers**) and GPT-2. The chatbots hyper parameters have been tuned to be able to handle quries of different lengths related to sign language and can direct users to different sections of our app based on their queries.
   
+
 
 ## About Us
 
-  
+Saradhi AI is developed by a team passionate about making sign language accessible to everyone. We believe in leveraging technology to bridge communication gaps and empower individuals with valuable skills. Through the language of hands, we bridge divides and empower voices, ensuring inclusivity for all abilities.
 
-Saradhi AI is developed by a team passionate about making sign language accessible to everyone. We believe in leveraging technology to bridge communication gaps and empower individuals with valuable skills. Through the language of hands, we bridge divides and empower voices, ensuring inclusivity for all abilities.🌟🤝
 
-  
-  
-
-Let's embark on a journey of learning and inclusion together with Saradhi AI! 🌈🤟
+Let's embark on a journey of learning and inclusion together with Saradhi AI!
