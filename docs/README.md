@@ -96,13 +96,11 @@ A human gesture recognition model for the American Sign Language (ASL) recogniti
 	4.  **person-detection-asl-0001**:
 This is a person detector for the ASL Recognition scenario. It is based on ShuffleNetV2-like backbone that includes depth-wise convolutions to reduce the amount of computation for the 3x3 convolution block and FCOS head.
 
-- **Chatbot**: The two chatbots that are available and ready for use are **Gemini-pro from Google** and **NeuralChat 7B from Intel**. Apart from this many other chatbots have been tested such as Mistral, Zephyr, bert-large (**from intel's extension for transformers**) and GPT-2. The chatbots hyper parameters have been tuned to be able to handle quries of different lengths related to sign language and can direct users to different sections of our app based on their queries.
+- **Chatbot**: The two chatbots that are available and ready for use are **Gemini-pro from Google** and **NeuralChat 7B from Intel**. Apart from this many other chatbots have been tested such as Mistral, Zephyr, bert-large (**from intel's extension for transformers library**) and GPT-2. The chatbots hyper parameters have been tuned to be able to handle quries of different lengths related to sign language and can direct users to different sections of our app based on their queries.
   
-
 
 ## About Us
 
 Saradhi AI is developed by a team passionate about making sign language accessible to everyone. We believe in leveraging technology to bridge communication gaps and empower individuals with valuable skills. Through the language of hands, we bridge divides and empower voices, ensuring inclusivity for all abilities.
-
 
 Let's embark on a journey of learning and inclusion together with Saradhi AI!
