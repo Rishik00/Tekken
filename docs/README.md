@@ -1,3 +1,5 @@
+
+
 # Intel's AI Hackathon
 # Team Name: Tekken
 
@@ -37,13 +39,18 @@ The flow diagram illustrates the sequential steps and interactions within Saradh
 ### User Interaction 🤳🗣️:
 
 Users interact with Saradhi AI through the mobile app, providing input via text, voice, or video. 
+<div style="display: flex;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;">
+</div>
 
-  
+
 
 ### Real-time Sign Language Translation 🔄📝:
 
 Saradhi AI's real-time sign language translation feature instantly converts sign language gestures captured by the device's camera into understandable text, providing seamless communication assistance.
 
+https://github.com/Rishik00/Tekken/assets/96735720/9fed7771-0751-42e3-a5b1-3ae082fba968
 
 
 
@@ -51,19 +58,40 @@ Saradhi AI's real-time sign language translation feature instantly converts sign
 
 Users can upload pre-recorded videos of sign language gestures for translation. Saradhi AI analyzes the uploaded videos using Intel's OpenVino ASL Recognition 004 model, providing accurate translations and enhancing accessibility.
 
+<div style="display: flex;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;">
+</div>
+
+
 ### Informative Course on Learning Sign Language 📚✍️:
 
 Saradhi AI offers an informative course on learning sign language, featuring interactive lessons and built-in assignments. Users can progress through the course at their own pace, receiving personalized feedback powered by Intel's OpenVino ASL Recognition 004 model.
+<div style="display: flex;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;">
+</div>
+
+
 
 ### Search Engine for Querying Specific Words in ASL 🔎📝:
 
 The search engine allows users to query specific words or phrases in American Sign Language (ASL). Saradhi AI's database contains a vast collection of ASL gestures, enabling users to easily find and practice sign language vocabulary.
+<div style="display: flex;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;">
+</div>
 
   
 
 ### Chatbot for Clearing Basic Doubts About ASL:
 
 Saradhi AI's integrated chatbot provides instant assistance and clears doubts about sign language. Powered by Intel-Hugging Face Neural Chat 7B model, the chatbot offers intelligent responses to user queries, ensuring a smooth learning experience.
+
+<div style="display: flex;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="250" style="margin-right: 10px;">
+</div>
 
   
 
