@@ -37,8 +37,8 @@ The flow diagram illustrates the sequential steps and interactions within Saradh
 
 Users interact with Saradhi AI through the mobile app, providing input via text, voice, or video. 
 <div style="display: flex;">
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/d4677053-6ddf-412f-babb-121689d16df7" alt="Video Upload" width="200" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/d4677053-6ddf-412f-babb-121689d16df7" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
 
@@ -55,7 +55,7 @@ Users can upload pre-recorded videos of sign language gestures for translation. 
 
 <div style="display: flex; justify-content: center;">
     <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/337cc623-6730-4033-8b83-673abb6352c2" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
 
@@ -64,8 +64,8 @@ Users can upload pre-recorded videos of sign language gestures for translation. 
 Saradhi AI offers an informative course on learning sign language, featuring interactive lessons and built-in assignments. Users can progress through the course at their own pace, receiving personalized feedback powered by Intel's OpenVino ASL Recognition 004 model.
 
 <div style="display: flex;">
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/aa764236-466e-4ac3-b35b-4f49cca9d3be" alt="Video Upload" width="200" style="margin-right: 10px;"> 
+    <img src="" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
 
@@ -75,8 +75,8 @@ Saradhi AI offers an informative course on learning sign language, featuring int
 The search engine allows users to query specific words or phrases in American Sign Language (ASL). Saradhi AI's database contains a vast collection of ASL gestures, enabling users to easily find and practice sign language vocabulary.
 
 <div style="display: flex;">
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/993af228-f5ad-4d57-b352-e1e114023883" alt="Video Upload" width="200" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/8b5da1bd-ea52-4ad5-918a-b4ab094bbec3" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
   
@@ -86,8 +86,8 @@ The search engine allows users to query specific words or phrases in American Si
 Saradhi AI's integrated chatbot provides instant assistance and clears doubts about sign language. Powered by Intel-Hugging Face Neural Chat 7B model, the chatbot offers intelligent responses to user queries, ensuring a smooth learning experience.
 
 <div style="display: flex;">
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/dbca1fee-75af-4761-b95c-3add0e227e13" alt="Video Upload" width="200" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/51f45a54-7fd4-4b4f-add1-cc7921069e33" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
   
