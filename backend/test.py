@@ -16,6 +16,7 @@ relay = MediaRelay()  # Provide the path to where you want to record
 # This dictionary stores the peer connections
 peer_connections = {}
 
+
 def append_to_file(file_path, text):
     """
     Append text to a file.
@@ -50,7 +51,8 @@ class VideoTransformTrack(MediaStreamTrack):
 
         if self.transform == "cartoon":
             img = frame.to_ndarray(format="bgr24")
-            append_to_file("file.txt", "hello")
+            # append_to_file("file.txt", img.shape)
+            print(img.shape)
 
             # prepare color
             img_color = cv2.pyrDown(cv2.pyrDown(img))
@@ -77,7 +79,7 @@ class VideoTransformTrack(MediaStreamTrack):
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
             new_frame.pts = frame.pts
             new_frame.time_base = frame.time_base
-            print("yes")
+            # print("yes")
             return new_frame
         elif self.transform == "edges":
             # perform edge detection
@@ -105,126 +107,83 @@ class VideoTransformTrack(MediaStreamTrack):
             return frame
 
 
+
+async def handle_offer(websocket: WebSocket, pc: RTCPeerConnection, message: dict):
+    print(message["offer"]["sdp"])
+    offer = RTCSessionDescription(
+        sdp=message["offer"]["sdp"], type=message["offer"]["type"]
+    )
+    await pc.setRemoteDescription(offer)
+    print("set remote description")
+
+    recorder = MediaBlackhole()
+    
+
+    answer = await pc.createAnswer()
+    print(answer.sdp)
+    await pc.setLocalDescription(answer)
+
+    await websocket.send_text(json.dumps({
+        "type": "answer",
+        "answer": {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
+    }))
+
+async def handle_candidate(pc: RTCPeerConnection, message: dict):
+    candidate_info = message["candidate"]["candidate"].split()
+    candidate = RTCIceCandidate(
+        candidate_info[1], candidate_info[0], candidate_info[4], 
+        int(candidate_info[5]), int(candidate_info[3]), candidate_info[2], 
+        candidate_info[7],
+        sdpMid=message["candidate"]["sdpMid"], sdpMLineIndex=message["candidate"]["sdpMLineIndex"]
+    )
+    await pc.addIceCandidate(candidate)
+
+async def handle_end_track(websocket: WebSocket, recorder: MediaBlackhole):
+    await websocket.send_text(json.dumps({"type": "track_end"}))
+    await recorder.stop()
+    print("Track ended")
+
+
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str):
     await websocket.accept()
-
-    # Create a new RTCPeerConnection for this client
     pc = RTCPeerConnection()
     peer_connections[client_id] = pc
 
-    recorder = MediaBlackhole()
-
-    async for message in websocket.iter_text():
-        message = json.loads(message)
-
-        if message["type"] == "offer":
-            offer = RTCSessionDescription(
-                sdp=message["offer"]["sdp"], type=message["offer"]["type"]
-            )
-
-            # Handle offer
-            await pc.setRemoteDescription(offer)
-            print("setting remote description")
-            await recorder.start()
-            print("recorder started")
-            
-
-            # Create answer
-            answer = await pc.createAnswer()
-            await pc.setLocalDescription(answer)
-
-            # Send answer back to client
-            await websocket.send_text(
-                json.dumps(
-                    {
-                        "type": "answer",
-                        "answer": {
-                            "sdp": pc.localDescription.sdp,
-                            "type": pc.localDescription.type,
-                        },
-                    }
-                )
-            )
-
-        elif message["type"] == "candidate":
-    
-            candidate_info = message["candidate"]["candidate"].split()
-
-            
-            
-            candidate = RTCIceCandidate(
-                candidate_info[1],
-                candidate_info[0],  # foundation
-                candidate_info[4],  # ip
-                int(candidate_info[5]),  # port
-                int(candidate_info[3]),  # priority
-                candidate_info[2],  # protocol
-                candidate_info[7],
-                sdpMid=message["candidate"]["sdpMid"],
-        sdpMLineIndex=message["candidate"]["sdpMLineIndex"]    # type
-            )
-
-            # Add the ICE candidate to the peer connection
-            await pc.addIceCandidate(candidate)
-
-        elif message["type"] == "end_track":
-            await websocket.send_text(json.dumps({"type": "track_end"})) 
-            await recorder.stop()
-            print("recorder stop") 
-
-    player = MediaPlayer(os.path.join(ROOT, "demo-instruct.wav"))
-
-            # Add local tracks
-            # pc.addTrack(media_player.audio)  # Add audio track
-
-    # recorder = MediaRecorder(os.path.join(ROOT,"recorded", "file.mpeg"))
-    
-    
-    print("recorder add track")
-    
     @pc.on("track")
-    def on_track(track):
-        if track.kind == "audio":
-            pc.addTrack(player.audio)
-            recorder.addTrack(track)
-        elif track.kind == "video":
-            print("video track")
+    async def on_track(track):
+        if track.kind == "video":
             pc.addTrack(
                 VideoTransformTrack(
                     relay.subscribe(track), transform="cartoon"
                 )
             )
-            # if args.record_to:
-            #     recorder.addTrack(relay.subscribe(track))
-            # pc.addTrack(relay.subscribe(track))
-            # print(vars(track))
-            recorder.addTrack( VideoTransformTrack(
-                    relay.subscribe(track), transform="cartoon"
-                ))
-            # ibs = MediaStream()
-            print("video track")
-            print(recorder)
+              # Or use MediaRecorder to record
+            recorder = MediaBlackhole()
+            recorder.addTrack(VideoTransformTrack(relay.subscribe(track), transform="cartoon"))
+            await recorder.start()
+            print("Video track added and recorder started")
 
-        @track.on("ended")
-        async def on_ended():
-            print("Track %s ended" % track.kind)
-            await recorder.stop()
+    async for message in websocket.iter_text():
+        message = json.loads(message)
 
-           
+        if message["type"] == "offer":
+            await handle_offer(websocket, pc, message)
+        elif message["type"] == "candidate":
+            await handle_candidate(pc, message)
+        elif message["type"] == "end_track":
+            recorder = MediaBlackhole()
+            await handle_end_track(websocket, recorder)
 
-     
-
-    # Cleanup on connection close
+    # Clean up after the connection is closed
     del peer_connections[client_id]
     await pc.close()
 
-
-@app.on_event("shutdown")
-async def on_shutdown():
-    # Close all peer connections
-    for pc in peer_connections.values():
-        await pc.close()
+# @app.on_event("shutdown")
+# async def on_shutdown():
+#     # Close all peer connections
+#     for pc in peer_connections.values():
+#         await pc.close()
 
 # Run server
 if __name__ == "__main__":

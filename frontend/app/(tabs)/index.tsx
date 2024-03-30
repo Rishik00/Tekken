@@ -28,6 +28,7 @@ export default function LiveTranslation() {
     const [ws, setWs] = useState<WebSocket | null>(null); // WebSocket connection state
     const [recSdp, setRecSdp] = useState("");
     const [ansSdp, setAnsSdp] = useState();
+    const [isRemoteDescSet, setIsRemoteDescSet] = useState<boolean>(false);
     const configuration = {
         iceServers: [
             {
@@ -130,8 +131,8 @@ export default function LiveTranslation() {
 
         try {
             const offerOptions = {
-                offerToReceiveAudio: true,
-                offerToReceiveVideo: true,
+                offerToReceiveAudio: false,
+                offerToReceiveVideo: false,
             };
 
             const offer = await localPC.createOffer(offerOptions);
@@ -154,13 +155,14 @@ export default function LiveTranslation() {
 
     const stopCall = () => {
         if (cachedLocalPC) {
-            cachedLocalPC.getSenders().forEach((sender: any) => {
+            cachedLocalPC.getSenders().forEach((sender: RTCRtpSender) => {
+                console.log("Removed track: ", sender.track);
                 cachedLocalPC.removeTrack(sender);
-                console.log("Removed track: ", sender);
             });
             cachedLocalPC.close();
             setCachedLocalPC(null);
             setRemoteStream(null);
+            setIsRemoteDescSet(false);
             ws?.send(JSON.stringify({ type: "end_track" }));
         }
     };
@@ -198,15 +200,16 @@ export default function LiveTranslation() {
     };
 
     useEffect(() => {
-        if (!cachedLocalPC || !ansSdp) return;
-        // cachedLocalPC
-        //     ?.setRemoteDescription(new RTCSessionDescription(ansSdp))
-        //     .then(() => {
-        //         console.log("SDP offer set as remote description");
-        //     })
-        //     .catch((error: any) => {
-        //         console.error("Error setting remote description:", error);
-        //     });
+        if (!cachedLocalPC || !ansSdp || isRemoteDescSet) return;
+        cachedLocalPC
+            ?.setRemoteDescription(new RTCSessionDescription(ansSdp))
+            .then(() => {
+                console.log("SDP offer set as remote description");
+                setIsRemoteDescSet(true);
+            })
+            .catch((error: any) => {
+                console.error("Error setting remote description:", error);
+            });
     }, [cachedLocalPC, ansSdp]);
 
     const connectWebSocket = () => {

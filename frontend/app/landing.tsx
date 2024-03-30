@@ -84,7 +84,7 @@ export default function LandingScreen() {
                                         "Sign Language Translation"
                                     )
                                 }
-                                className={`flex flex-col items-center border border-slate-400  w-[30%] h-28 p-3 mt-4 ${
+                                className={`flex flex-col items-center border-[0.5px] border-slate-400  w-[30%] h-28 p-3 mt-4 ${
                                     isStreakP
                                         ? "bg-gray-100 dark:bg-slate-500"
                                         : "bg-gray-50 dark:bg-slate-600"
@@ -104,7 +104,7 @@ export default function LandingScreen() {
                                         "Sign Language Translation"
                                     )
                                 }
-                                className={`flex flex-col items-center w-[30%] border border-slate-400 h-28 p-3 mt-4 ${
+                                className={`flex flex-col items-center w-[30%] border-[0.5px] border-slate-400 h-28 p-3 mt-4 ${
                                     isLTP
                                         ? "bg-gray-100 dark:bg-slate-500"
                                         : "bg-gray-50 dark:bg-slate-600"
@@ -120,7 +120,7 @@ export default function LandingScreen() {
                             </Pressable>
                             <Pressable
                                 onPress={() => handleFeaturePress("Chat Bot")}
-                                className={`flex flex-col items-center w-[30%] border border-slate-400 h-28 p-3 mt-4 ${
+                                className={`flex flex-col items-center w-[30%] border-[0.5px] border-slate-400 h-28 p-3 mt-4 ${
                                     isCBP
                                         ? "bg-gray-100 dark:bg-slate-500"
                                         : "bg-gray-50 dark:bg-slate-600"
@@ -148,7 +148,7 @@ export default function LandingScreen() {
                     onPress={() =>
                         handleFeaturePress("Sign Language Translation")
                     }
-                    className={`flex flex-row items-center w-full mt-4 border border-slate-400 overflow-hidden ${
+                    className={`flex flex-row items-center w-full mt-4 border-[0.5px] border-slate-400 overflow-hidden ${
                         isF1P
                             ? "bg-pink-300 dark:bg-slate-500"
                             : "bg-pink-200 shadow-lg dark:bg-slate-600"
@@ -166,7 +166,7 @@ export default function LandingScreen() {
                 </Pressable>
                 <Pressable
                     onPress={() => handleFeaturePress("Chat Bot")}
-                    className={`flex flex-row items-center w-full mt-4 border border-slate-400 overflow-hidden ${
+                    className={`flex flex-row items-center w-full mt-4 border-[0.5px] border-slate-400 overflow-hidden ${
                         isF2P
                             ? "bg-indigo-300 dark:bg-slate-500"
                             : "bg-indigo-200 shadow-lg dark:bg-slate-600"
@@ -182,7 +182,7 @@ export default function LandingScreen() {
                 </Pressable>
                 <Pressable
                     onPress={() => handleFeaturePress("Learn Sign Language")}
-                    className={`flex flex-row items-center w-full mt-4 border border-slate-400 overflow-hidden ${
+                    className={`flex flex-row items-center w-full mt-4 border-[0.5px] border-slate-400 overflow-hidden ${
                         isF3P
                             ? "bg-[#E9DFC9] dark:bg-slate-500"
                             : "bg-[#FFF5E4]  shadow-lg dark:bg-slate-600"
