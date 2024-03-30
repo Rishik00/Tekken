@@ -30,13 +30,13 @@ export default function LandingScreen() {
             // Handle navigation to respective feature based on the feature name
             switch (feature) {
                 case "Sign Language Translation":
-                    router.push("/(tabs)");
+                    router.push("/(tabs)/chatbot");
                     break;
                 case "Chat Bot":
                     router.push("/(tabs)/chatbot");
                     break;
                 case "Learn Sign Language":
-                    router.push("/(tabs)");
+                    router.push("/(tabs)/chatbot");
                     break;
                 default:
                     break;
@@ -54,7 +54,7 @@ export default function LandingScreen() {
     return (
         <SafeAreaView className="flex flex-1 bg-[#E3F4FE]">
             <Text className="px-4 mt-12 text-xl text-slate-800 mb-[-10] z-30">
-                Sign Language Translator
+                Saradhi AI
             </Text>
             <View className="overflow-hidden ">
                 <ImageBackground

@@ -42,7 +42,13 @@
         },
         "plugins": [
             "expo-router",
-            "@config-plugins/react-native-webrtc",
+            [
+                "@config-plugins/react-native-webrtc",
+                {
+                    "cameraPermission": "Allow to access your camera",
+                    "microphonePermission": "Allow to access your micro phone"
+                }
+            ],
             "expo-document-picker"
         ],
         "experiments": {
