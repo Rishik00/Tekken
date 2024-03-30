@@ -287,7 +287,7 @@ export default function LiveTranslation() {
             className="w-full h-full bg-slate-50 dark:bg-slate-800"
         >
             {localStream && (
-                <View className="relative w-full overflow-hidden border-b shadow-lg h-4/5 rounded-b-2xl">
+                <View className="relative w-full overflow-hidden border-b rounded-b-[36px] shadow-lg h-4/5">
                     {!isOffCam ? (
                         <RTCView
                             streamURL={localStream.toURL()}
