@@ -52,7 +52,7 @@ class VideoTransformTrack(MediaStreamTrack):
         if self.transform == "cartoon":
             img = frame.to_ndarray(format="bgr24")
             # append_to_file("file.txt", img.shape)
-            print(img.shape)
+            # print(img.shape)
 
             # prepare color
             img_color = cv2.pyrDown(cv2.pyrDown(img))
@@ -159,10 +159,13 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                 )
             )
               # Or use MediaRecorder to record
-            recorder = MediaBlackhole()
+            recorder = MediaRecorder("sample.mp4")
             recorder.addTrack(VideoTransformTrack(relay.subscribe(track), transform="cartoon"))
             await recorder.start()
             print("Video track added and recorder started")
+            @track.on("ended")
+            async def on_ended():
+                await recorder.stop()
 
     async for message in websocket.iter_text():
         message = json.loads(message)

@@ -86,7 +86,7 @@ export default function LiveTranslation() {
                 mandatory: {
                     minWidth: 500,
                     minHeight: 300,
-                    minFrameRate: 30,
+                    frameRate: 16,
                 },
                 facingMode,
                 optional: videoSourceId ? [{ sourceId: videoSourceId }] : [],

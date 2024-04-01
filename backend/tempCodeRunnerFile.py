@@ -1,4 +1,1 @@
-        message["candidate"]["candidate"],
-                sdpMid=message["candidate"]["sdpMid"],
-                sdpMLineIndex=message["candidate"]["sdpMLineIndex"]
-            )
+await asyncio.sleep(0.01)
