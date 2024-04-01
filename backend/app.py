@@ -176,3 +176,41 @@ async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = Fil
         shutil.rmtree(video_dir)
 
     return JSONResponse(content={"message": "Video received and processing started.", "labels": list(labels), "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
+
+VIDEO_DIR = "videos"
+if not os.path.exists(VIDEO_DIR):
+    os.makedirs(VIDEO_DIR)
+
+# Global storage for PeerConnection instances
+pcs = set()
+
+@app.get('/processed_labels')
+def save_and_process_video():
+    # Dummy processing - Replace with your actual function call
+    action_model = os.path.join(BASE_DIR, "intel", "asl-recognition-0004", "FP16", "asl-recognition-0004.xml")
+    detection_model = os.path.join(BASE_DIR, "intel", "person-detection-asl-0001", "FP16", "person-detection-asl-0001.xml")
+    class_map_path = os.path.join(BASE_DIR, "intel", "msasl100.json")
+    device = "CPU"  
+    
+    fullPath = os.path.join(BASE_DIR, "videos")
+
+    if not os.path.exists(fullPath):
+        return HTTPException(status_code=404)
+
+    if os.path.exists(fullPath) and os.path.isdir(fullPath):
+        print(os.listdir(fullPath))
+        video_path = os.listdir(fullPath).pop(0)
+        video_path=os.path.join(fullPath, video_path)
+    
+        labels = run_gesture_recognition(action_model,
+            detection_model,
+            video_path,
+            class_map_path=class_map_path,
+            device=device,
+            no_show=True)
+        
+        print(labels)
+        os.remove(video_path)
+        return {"labels":labels}
+    else:
+        return{"labels": ["Nothing to See Here"]}
