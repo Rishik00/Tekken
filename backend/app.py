@@ -20,16 +20,17 @@ from time import perf_counter
 from intel.toolkit.gesture_function import run_gesture_recognition
 
 
+cred = credentials.Certificate("./firebase-admin.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 # Initialize FastAPI app
 app = FastAPI()
 # Initialize NeuralNet
 nn = NeuralNet7B()
 gpt2 = FineTunedGPT2()
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("./firebase-admin.json")
-firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+
 
 # Initialize Gemini model
 load_dotenv()
@@ -114,6 +115,8 @@ def get_chat_history(user_id):
         list: A list of dictionaries representing the chat history. Each dictionary contains the 'text' and 'sender' fields of a chat message. If the user does not have a chat history or the 'chats' field is missing in the user data, an empty list is returned.
     """
     user_ref = db.collection('Users').document(user_id)
+
+    print('Retrieving chat history for user:', user_id)
     user_data = user_ref.get().to_dict()
     if user_data and 'chats' in user_data:
         # Exclude timestamps and handle missing 'sender' field
@@ -163,6 +166,7 @@ def get_intel_output(data: InputData):
 # History route
 @app.post('/history')
 async def fetch_chat_history(request: Request):
+    
     data = await request.json()
     user_id = data.get('uid', '')  # Retrieve uid from request data
     # Retrieve chat history from Firebase for the specified user
@@ -267,7 +271,7 @@ import cv2
 from av import VideoFrame
 ROOT = os.path.dirname(__file__)
 
-app = FastAPI()
+# app = FastAPI()
 
 relay = MediaRelay()  # Provide the path to where you want to record
 
@@ -353,6 +357,7 @@ class VideoTransformTrack(MediaStreamTrack):
         super().__init__()  # don't forget this!
         self.track = track
         self.transform = transform
+        # self.labels_found=set()
 
     async def recv(self):
         rawFrame = await self.track.recv()
@@ -364,10 +369,10 @@ class VideoTransformTrack(MediaStreamTrack):
         batch = video_stream.get_batch(action_recognizer.input_length)
         try:
             if batch:
-                print("running")
+                # print("running")
                 detections, _ = person_tracker.add_frame(frame, len(OBJECT_IDS), {})
                 if detections is not None:
-                    labels_found=set()
+                    
                     for detection in detections:
                         # print(detection.roi.reshape(-1))
                         # print("running")
@@ -377,11 +382,12 @@ class VideoTransformTrack(MediaStreamTrack):
                             action_score = np.max(recognizer_result)
                             if action_score >= action_threshold:
                                 action_label = class_map[action_class_id]
-                                labels_found.add(action_label)
+                                live_labels.add(action_label)
                                 print(f'Action ID: {action_class_id}, Score: {action_score}, Label: {action_label}')
+                               
                         else:
                             print("No recognizer result")
-                    live_labels=labels_found
+                    
                 else:
                     print("No detections")
             else:
@@ -476,9 +482,10 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
 
 @app.get('/live_labels')
 def get_live_labels():
-    return JSONResponse({"labels" : live_labels})
+    return JSONResponse({"labels" : list(live_labels)})
 
 # Run server
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload="True")
+# if __name__ == "__main__":
+#     import uvicorn
+
+#     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload="True")

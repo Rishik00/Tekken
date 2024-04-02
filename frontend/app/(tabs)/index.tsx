@@ -4,6 +4,7 @@ import {
     PermissionsAndroid,
     Platform,
     Pressable,
+    ScrollView,
     View,
 } from "react-native";
 import {
@@ -29,6 +30,8 @@ export default function LiveTranslation() {
     const [recSdp, setRecSdp] = useState("");
     const [ansSdp, setAnsSdp] = useState();
     const [isRemoteDescSet, setIsRemoteDescSet] = useState<boolean>(false);
+    const [translatedText, setTranslatedText] = useState<string>("loading...");
+    const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
     const configuration = {
         iceServers: [
             {
@@ -284,10 +287,31 @@ export default function LiveTranslation() {
         connectWebSocket();
     }, []);
 
+    useEffect(() => {
+        const url = `${API_BASE_URL}/live_labels`;
+        if (isRemoteDescSet) {
+            setInterval(() => {
+                fetch(url)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        // console.log(data);
+                        setTranslatedText(data.labels);
+                        // Do something with the response data if needed
+                    })
+                    .catch((error) => console.error("Error:", error));
+            }, 1000);
+        }
+    }, [isRemoteDescSet]);
+
     return (
         <View
             style={{ flex: 1 }}
-            className="w-full h-full bg-slate-50 dark:bg-slate-800"
+            className="flex flex-col items-center w-full h-full bg-slate-50 dark:bg-slate-900"
         >
             {localStream && (
                 <View className="relative w-full overflow-hidden border-b rounded-b-[36px] shadow-lg h-4/5">
@@ -345,7 +369,24 @@ export default function LiveTranslation() {
                     </View>
                 </View>
             )}
-            {remoteStream && (
+            {/* <View className="p-2 px-4 mt-4 rounded-lg shadow-lg h-1/5 bg-slate-50 dark:bg-slate-600 ">
+                
+            </View> */}
+            {isRemoteDescSet && (
+                <View className="w-full">
+                    <View className="flex flex-row items-center mt-4 bg-transparent ">
+                        <View className="flex-grow h-[1px] bg-slate-300 dark:bg-slate-600 ml-2"></View>
+                        <Text className="mx-2 text-sm tracking-wider text-center">
+                            Translated Text
+                        </Text>
+                        <View className="flex-grow h-[1px]  bg-slate-300 dark:bg-slate-600 mr-2"></View>
+                    </View>
+                    <ScrollView className="self-start mx-4 mt-2 max-h-16">
+                        <Text>{translatedText}</Text>
+                    </ScrollView>
+                </View>
+            )}
+            {/* {remoteStream && (
                 <View className="w-full h-1/5">
                     <RTCView
                         style={{ flex: 1 }}
@@ -353,7 +394,7 @@ export default function LiveTranslation() {
                         objectFit="cover"
                     />
                 </View>
-            )}
+            )} */}
         </View>
     );
 }

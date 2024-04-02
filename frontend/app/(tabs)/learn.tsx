@@ -148,7 +148,7 @@ export default function Translation() {
                     </Text>
                 </View>
             </View>
-            <View className="flex-1 p-4 rounded-t-[36px] bg-slate-200 dark:bg-slate-800 justify-center mt-2 flex flex-col items-center">
+            <View className="flex-1 p-4 rounded-t-[36px] bg-slate-200 dark:bg-slate-900 justify-center mt-2 flex flex-col items-center">
                 {selectedLesseon === "" && (
                     <View className="flex flex-col items-center w-11/12 bg-transparent">
                         <Pressable

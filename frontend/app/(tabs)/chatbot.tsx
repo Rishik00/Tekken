@@ -121,7 +121,7 @@ export default function Translation() {
             behavior={Platform.OS === "ios" ? "padding" : undefined}
             keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} // Adjust this value according to your needs
         >
-            <View className="flex-1 p-4 bg-slate-200 dark:bg-slate-800">
+            <View className="flex-1 p-4 bg-slate-200 dark:bg-slate-900">
                 <ScrollView
                     ref={scrollViewRef} // Assign the ref to ScrollView
                     style={{ flex: 1 }}

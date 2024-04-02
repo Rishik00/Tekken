@@ -13,7 +13,7 @@ import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/AuthProvider";
 
 export default function LandingScreen() {
-    const { user } = useAuth(); // Get user from the AuthProvider
+    const { user, signOut } = useAuth(); // Get user from the AuthProvider
     const [isStreakP, setIsStreakP] = useState<boolean>(false);
     const [isLTP, setIsLTP] = useState<boolean>(false);
     const [isCBP, setIsCBP] = useState<boolean>(false);
@@ -30,13 +30,13 @@ export default function LandingScreen() {
             // Handle navigation to respective feature based on the feature name
             switch (feature) {
                 case "Sign Language Translation":
-                    router.push("/(tabs)/chatbot");
+                    router.push("/(tabs)");
                     break;
                 case "Chat Bot":
                     router.push("/(tabs)/chatbot");
                     break;
                 case "Learn Sign Language":
-                    router.push("/(tabs)/chatbot");
+                    router.push("/(tabs)/learn");
                     break;
                 default:
                     break;
@@ -53,9 +53,18 @@ export default function LandingScreen() {
 
     return (
         <SafeAreaView className="flex flex-1 bg-[#E3F4FE]">
-            <Text className="px-4 mt-12 text-xl text-slate-800 mb-[-10] z-30">
-                Saradhi AI
-            </Text>
+            <View className="flex flex-row items-center justify-between w-full mt-8 bg-transparent ">
+                <Text className="z-30 px-4 text-xl text-slate-800">
+                    Saradhi AI
+                </Text>
+                <Pressable
+                    onPress={() => signOut()}
+                    className="px-3 py-2 mr-2 bg-blue-500 rounded-md "
+                >
+                    <Text className="text-center text-white">Sign Out</Text>
+                </Pressable>
+            </View>
+
             <View className="overflow-hidden ">
                 <ImageBackground
                     source={require("../assets/images/sign-bg.jpg")}
@@ -66,7 +75,7 @@ export default function LandingScreen() {
                     </Text>
                 </ImageBackground>
             </View>
-            <View className="flex-1 p-4 rounded-t-[36px] bg-slate-200 dark:bg-slate-800 mt-2">
+            <View className="flex-1 p-4 rounded-t-[36px] bg-slate-200 dark:bg-slate-900 mt-2">
                 {user && (
                     <View className="bg-transparent ">
                         <View className="flex flex-row items-center w-full mt-4 bg-transparent ">
@@ -80,9 +89,7 @@ export default function LandingScreen() {
                         <View className="flex flex-row items-center justify-between bg-transparent ">
                             <Pressable
                                 onPress={() =>
-                                    handleFeaturePress(
-                                        "Sign Language Translation"
-                                    )
+                                    handleFeaturePress("Learn Sign Language")
                                 }
                                 className={`flex flex-col items-center border-[0.5px] border-slate-400  w-[30%] h-28 p-3 mt-4 ${
                                     isStreakP

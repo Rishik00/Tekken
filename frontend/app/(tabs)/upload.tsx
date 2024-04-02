@@ -4,7 +4,8 @@ import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { Text } from "@/components/Themed";
 import { FontAwesome } from "@expo/vector-icons";
-
+import { AntDesign } from "@expo/vector-icons";
+import * as Speech from "expo-speech";
 const DocPicker = () => {
     const [doc, setDoc] = useState<any>();
     const [filename, setFilename] = useState<string>();
@@ -39,7 +40,10 @@ const DocPicker = () => {
         });
         // console.log(result);
     };
-
+    const speak = () => {
+        const thingToSay = translatedText.toString();
+        Speech.speak(thingToSay);
+    };
     const postDocument = () => {
         const url = `${API_BASE_URL}/upload-video-file/`;
         const formData = new FormData();
@@ -52,6 +56,7 @@ const DocPicker = () => {
                 "Content-Type": "multipart/form-data",
             },
         };
+        setTranslatedText("loading...");
         // console.log(formData);
 
         fetch(url, options)
@@ -70,7 +75,7 @@ const DocPicker = () => {
     };
 
     return (
-        <View className="flex flex-col items-center flex-1 p-4 bg-slate-200 dark:bg-slate-800">
+        <View className="flex flex-col items-center flex-1 p-4 bg-slate-200 dark:bg-slate-900">
             <Image
                 source={require("@/assets/images/upload.png")}
                 className="w-40 h-40 mt-4"
@@ -132,10 +137,19 @@ const DocPicker = () => {
                         </Text>
                         <View className="flex-grow h-[1px]  bg-slate-300 dark:bg-slate-600 mr-2"></View>
                     </View>
-                    <View className="w-4/5 p-2 px-4 mt-4 rounded-lg shadow-lg max-h-72 bg-slate-50 dark:bg-slate-600">
+                    <View className="flex flex-row justify-between w-4/5 p-2 px-4 mt-4 rounded-lg shadow-lg max-h-72 bg-slate-50 dark:bg-slate-600">
                         <ScrollView>
                             <Text>{translatedText}</Text>
                         </ScrollView>
+                        {translatedText !== "loading..." && (
+                            <Pressable onPress={speak}>
+                                <AntDesign
+                                    name="sound"
+                                    size={24}
+                                    color="#3B82F6"
+                                />
+                            </Pressable>
+                        )}
                     </View>
                 </View>
             )}
