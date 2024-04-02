@@ -1,6 +1,6 @@
 # Intel's AI Hackathon
 
-# Project Description: 
+# Project Title: 
 ## Saradhi AI: Sign Language Learning Mobile App 🤟
 ## Intel's ToolKits used: Intel's OpenVino toolkit, Intel Developer cloud
 
