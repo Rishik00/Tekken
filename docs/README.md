@@ -2,9 +2,9 @@
 
 # Project Description: 
 ## Saradhi AI: Sign Language Learning Mobile App 🤟
-### Intel's ToolKits used: Intel's OpenVino toolkit, Intel Developer cloud
+## Intel's ToolKits used: Intel's OpenVino toolkit, Intel Developer cloud
 
-## Project Demo: https://youtu.be/Rm8zwcfuMgI
+### Project Demo: https://youtu.be/Rm8zwcfuMgI
 ## Project Demo: 
 
 Welcome to Saradhi AI, your ultimate companion for learning and mastering sign language made possible through Intel. Saradhi AI combines cutting-edge technology with comprehensive learning resources to make sign language accessible to everyone. With real-time sign language translation, informative courses, a searchable database, and a helpful assistant, Saradhi AI is your one-stop solution for sign language learning.
