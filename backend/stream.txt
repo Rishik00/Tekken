@@ -1,0 +1,134 @@
+# from aiortc import RTCPeerConnection, RTCSessionDescription, MediaStreamTrack
+# from aiortc.contrib.media import MediaRelay
+# from fastapi import FastAPI, WebSocket
+# import cv2
+# import asyncio
+# import json
+# import os
+
+# from intel.toolkit.gesture_function import run_gesture_recognition
+
+
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# action_model = os.path.join(BASE_DIR, "intel", "asl-recognition-0004", "FP16", "asl-recognition-0004.xml")
+# detection_model = os.path.join(BASE_DIR, "intel", "person-detection-asl-0001", "FP16", "person-detection-asl-0001.xml")
+# class_map_path = os.path.join(BASE_DIR, "intel", "msasl100.json")
+# device = "CPU"  
+
+
+# app = FastAPI()
+# pcs = set()  # Keep track of peer connections
+
+# relay = MediaRelay()
+
+# processed_labels=[]
+
+# class VideoSaverTrack(MediaStreamTrack):
+#     kind = "video"
+
+#     def __init__(self, track, video_dir="videos", segment_duration=5, fps=20):
+#         super().__init__()  # Initialize base class
+#         self.track = relay.subscribe(track)
+#         self.video_dir = video_dir
+#         self.segment_duration = segment_duration
+#         self.frames = []
+#         self.start_time = None
+#         self.file_counter = 0
+#         self.fps = fps
+
+#         if not os.path.exists(video_dir):
+#             os.makedirs(video_dir)
+
+#     async def recv(self):
+#         frame = await self.track.recv()
+
+#         if self.start_time is None:
+#             self.start_time = asyncio.get_event_loop().time()
+#             self.frames = []
+
+#         # Convert aiortc frame to OpenCV image
+#         img = frame.to_ndarray(format="bgr24")
+#         self.frames.append(img)
+
+#         current_time = asyncio.get_event_loop().time()
+#         if current_time - self.start_time >= self.segment_duration:
+#             self.file_counter += 1
+#             filename = os.path.join(self.video_dir, f"video_segment_{self.file_counter}.mp4")
+#             self.save_video_segment(filename, self.frames)
+#             self.frames = []
+#             self.start_time = None
+
+#             # Placeholder for processing the video segment
+#             labels = run_gesture_recognition(
+#             action_model,
+#             detection_model,
+#             filename,
+#             class_map_path=class_map_path,
+#             device=device,
+#             no_show=True
+#             )
+#             global processed_labels
+#             processed_labels=labels
+
+#             print("This is the processed labels", labels)
+        
+#         # os.remove(filename)
+#         # print(f"Deleted {filename}")
+
+#         return frame
+
+#     def save_video_segment(self, filename, frames):
+#         # Define the codec and create VideoWriter object
+#         height, width, _ = frames[0].shape
+#         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+#         out = cv2.VideoWriter(filename, fourcc, self.fps, (width, height))
+
+#         for img in frames:
+#             out.write(img)
+
+#         out.release()
+#         print(f"Saved {filename}")
+
+# @app.websocket("/webrtc")
+# async def webrtc_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     pc = RTCPeerConnection()
+#     pcs.add(pc)
+
+#     @pc.on("track")
+#     def on_track(track):
+#         if track.kind == "video":
+#             local_video = VideoSaverTrack(track)
+#             pc.addTrack(local_video)
+
+#     while True:
+#         data = await websocket.receive_text()
+#         message = json.loads(data)
+
+#         if message["type"] == "offer":
+#             # Set remote offer
+#             await pc.setRemoteDescription(RTCSessionDescription(sdp=message["sdp"], type="offer"))
+#             # Create local answer
+#             answer = await pc.createAnswer()
+#             await pc.setLocalDescription(answer)
+#             # Send answer back to client
+#             await websocket.send_text(json.dumps({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}))
+#             await websocket.send_text(json.dumps({"type": "labels", "data": processed_labels}))
+        
+#         elif message["type"] == "request_labels":
+#             # Send the labels back as a JSON string
+#             await websocket.send_text(json.dumps({"type": "labels", "data": processed_labels}))
+
+#     return "Disconnected"
+
+# @app.on_event("shutdown")
+# async def shutdown_event():
+#     # Close peer connections
+#     coros = [pc.close() for pc in pcs]
+#     await asyncio.gather(*coros)
+#     pcs.clear()
+
+# import uvicorn
+
+# if __name__ == "__main__":
+#     uvicorn.run("stream:app", host="127.0.0.1", port=8000, reload=True)

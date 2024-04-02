@@ -14,7 +14,7 @@ import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/AuthProvider";
 import VideoPlayerModal from "@/components/VideoPlayerModal";
 
-export default function ChatScreen() {
+export default function Translation() {
     const { user, signIn, signOut } = useAuth();
     const [message, setMessage] = useState("");
     const [videoUrls, setVideoUrls] = useState<

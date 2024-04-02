@@ -1,167 +1,144 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebRTC demo</title>
-    <style>
-    button {
-        padding: 8px 16px;
-    }
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WebRTC Video Chat</title>
+    </head>
+    <body>
+        <h1>WebRTC Video Chat</h1>
+        <video id="video" autoplay playsinline></video>
 
-    pre {
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
+        <script>
+            // get DOM elements
+            var iceConnectionLog = document.getElementById(
+                    "ice-connection-state"
+                ),
+                iceGatheringLog = document.getElementById(
+                    "ice-gathering-state"
+                ),
+                signalingLog = document.getElementById("signaling-state");
 
-    video {
-        width: 100%;
-    }
+            // peer connection
+            var pc = null;
 
-    .option {
-        margin-bottom: 8px;
-    }
+            function createPeerConnection() {
+                var config = {
+                    sdpSemantics: "unified-plan",
+                };
 
-    #media {
-        max-width: 1280px;
-    }
-    </style>
-</head>
-<body>
+                if (document.getElementById("use-stun").checked) {
+                    config.iceServers = [
+                        { urls: ["stun:stun.l.google.com:19302"] },
+                    ];
+                }
 
-<h2>Options</h2>
-<div class="option">
-    <input id="use-datachannel" checked="checked" type="checkbox"/>
-    <label for="use-datachannel">Use datachannel</label>
-    <select id="datachannel-parameters">
-        <option value='{"ordered": true}'>Ordered, reliable</option>
-        <option value='{"ordered": false, "maxRetransmits": 0}'>Unordered, no retransmissions</option>
-        <option value='{"ordered": false, "maxPacketLifetime": 500}'>Unordered, 500ms lifetime</option>
-    </select>
-</div>
-<div class="option">
-    <input id="use-audio" checked="checked" type="checkbox"/>
-    <label for="use-audio">Use audio</label>
-    <select id="audio-input">
-        <option value="" selected>Default device</option>
-    </select>
-    <select id="audio-codec">
-        <option value="default" selected>Default codecs</option>
-        <option value="opus/48000/2">Opus</option>
-        <option value="PCMU/8000">PCMU</option>
-        <option value="PCMA/8000">PCMA</option>
-    </select>
-</div>
-<div class="option">
-    <input id="use-video" type="checkbox"/>
-    <label for="use-video">Use video</label>
-    <select id="video-input">
-        <option value="" selected>Default device</option>
-    </select>
-    <select id="video-resolution">
-        <option value="" selected>Default resolution</option>
-        <option value="320x240">320x240</option>
-        <option value="640x480">640x480</option>
-        <option value="960x540">960x540</option>
-        <option value="1280x720">1280x720</option>
-    </select>
-    <select id="video-transform">
-        <option value="none" selected>No transform</option>
-        <option value="edges">Edge detection</option>
-        <option value="cartoon">Cartoon effect</option>
-        <option value="rotate">Rotate</option>
-    </select>
-    <select id="video-codec">
-        <option value="default" selected>Default codecs</option>
-        <option value="VP8/90000">VP8</option>
-        <option value="H264/90000">H264</option>
-    </select>
-</div>
-<div class="option">
-    <input id="use-stun" type="checkbox"/>
-    <label for="use-stun">Use STUN server</label>
-</div>
+                pc = new RTCPeerConnection(config);
 
-<button id="start" onclick="start()">Start</button>
-<button id="stop" style="display: none" onclick="stop()">Stop</button>
+                // register some listeners to help debugging
+                pc.addEventListener(
+                    "icegatheringstatechange",
+                    () => {
+                        iceGatheringLog.textContent +=
+                            " -> " + pc.iceGatheringState;
+                    },
+                    false
+                );
+                iceGatheringLog.textContent = pc.iceGatheringState;
 
-<h2>State</h2>
-<p>
-    ICE gathering state: <span id="ice-gathering-state"></span>
-</p>
-<p>
-    ICE connection state: <span id="ice-connection-state"></span>
-</p>
-<p>
-    Signaling state: <span id="signaling-state"></span>
-</p>
+                pc.addEventListener(
+                    "iceconnectionstatechange",
+                    () => {
+                        iceConnectionLog.textContent +=
+                            " -> " + pc.iceConnectionState;
+                    },
+                    false
+                );
+                iceConnectionLog.textContent = pc.iceConnectionState;
 
-<div id="media" style="display: none">
-    <h2>Media</h2>
+                pc.addEventListener(
+                    "signalingstatechange",
+                    () => {
+                        signalingLog.textContent += " -> " + pc.signalingState;
+                    },
+                    false
+                );
+                signalingLog.textContent = pc.signalingState;
 
-    <audio id="audio" autoplay="true"></audio>
-    <video id="video" autoplay="true" playsinline="true"></video>
-</div>
+                // connect video
+                pc.addEventListener("track", (evt) => {
+                    if (evt.track.kind == "video")
+                        document.getElementById("video").srcObject =
+                            evt.streams[0];
+                });
 
-<h2>Processed Labels</h2>
-<div id="processed-labels">
-    <!-- This div will be updated with the processed labels from the server -->
-</div>
-
-<h2>Data channel</h2>
-<pre id="data-channel" style="height: 200px;"></pre>
-
-<h2>SDP</h2>
-
-<h3>Offer</h3>
-<pre id="offer-sdp"></pre>
-
-<h3>Answer</h3>
-<pre id="answer-sdp"></pre>
-
-<script>
-    // Assuming the rest of your client-side WebRTC logic remains unchanged
-    
-    let shouldFetchLabels = false; // This flag controls the label fetching
-    
-    async function fetchProcessedLabels() {
-        if (!shouldFetchLabels) return; // Stop fetching if the flag is false
-    
-        try {
-            const response = await fetch('http://localhost:8000/processed_labels');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                return pc;
             }
-            const data = await response.json();
-            document.getElementById('processed-labels').textContent = JSON.stringify(data);
-    
-            if (shouldFetchLabels) {
-                setTimeout(fetchProcessedLabels, 5000); // Continue fetching after a delay
-            }
-        } catch (error) {
-            console.error("Fetch error: " + error.message);
-            if (shouldFetchLabels) {
-                setTimeout(fetchProcessedLabels, 5000); // Try again after a delay if there's an error
-            }
-        }
-    }
-    
-    document.getElementById('start').addEventListener('click', () => {
-        // Set the flag to true and start fetching labels
-        shouldFetchLabels = true;
-        fetchProcessedLabels();
-    });
-    
-    document.getElementById('stop').addEventListener('click', () => {
-        // Set the flag to false to stop fetching labels
-        shouldFetchLabels = false;
-    });
-    
-    // Make sure you remove the direct call to fetchProcessedLabels() to prevent it from starting immediately
-    // fetchProcessedLabels(); // Remove this line
-    </script>
-    
 
-<script src="client.js"></script>
-</body>
+            function negotiate() {
+                return pc
+                    .createOffer()
+                    .then((offer) => {
+                        return pc.setLocalDescription(offer);
+                    })
+                    .then(() => {
+                        // wait for ICE gathering to complete
+                        return new Promise((resolve) => {
+                            if (pc.iceGatheringState === "complete") {
+                                resolve();
+                            } else {
+                                function checkState() {
+                                    if (pc.iceGatheringState === "complete") {
+                                        pc.removeEventListener(
+                                            "icegatheringstatechange",
+                                            checkState
+                                        );
+                                        resolve();
+                                    }
+                                }
+                                pc.addEventListener(
+                                    "icegatheringstatechange",
+                                    checkState
+                                );
+                            }
+                        });
+                    })
+                    .then(() => {
+                        var offer = pc.localDescription;
+                        document.getElementById("offer-sdp").textContent =
+                            offer.sdp;
+                        return fetch("/offer", {
+                            body: JSON.stringify({
+                                sdp: offer.sdp,
+                                type: offer.type,
+                            }),
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            method: "POST",
+                        });
+                    })
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((answer) => {
+                        document.getElementById("answer-sdp").textContent =
+                            answer.sdp;
+                        return pc.setRemoteDescription(answer);
+                    })
+                    .catch((e) => {
+                        alert(e);
+                    });
+            }
+
+            function start() {
+                document.getElementById("start").style.display = "none";
+
+                pc = createPeerConnection();
+                return negotiate();
+            }
+
+            start();
+        </script>
+    </body>
 </html>

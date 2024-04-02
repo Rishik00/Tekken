@@ -65,7 +65,7 @@ const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                         <View className="flex-grow h-[1px] bg-slate-300 dark:bg-slate-600 mr-2"></View>
                     </View>
                     {videos.length > 0 && currentIndex < videos.length ? ( // Check if videos array is not empty and currentIndex is within bounds
-                        <>
+                        <View className="flex flex-col items-center">
                             <Video
                                 ref={videoRef}
                                 style={{ width: 300, height: 200 }}
@@ -83,7 +83,7 @@ const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                                 {videos[currentIndex].word}
                             </Text>
                             {/* Display word beneath the video */}
-                        </>
+                        </View>
                     ) : (
                         <Text>No videos available</Text>
                     )}

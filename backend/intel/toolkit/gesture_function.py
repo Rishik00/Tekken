@@ -39,6 +39,15 @@ from intel.toolkit.gesture_recognition_demo.action_recognizer import ActionRecog
 from intel.toolkit.gesture_recognition_demo.visualizer import Visualizer
 from intel.toolkit.model_api.performance_metrics import PerformanceMetrics
 
+# from gesture_recognition_demo.common import load_core
+# from gesture_recognition_demo.video_stream import VideoStream
+# from gesture_recognition_demo.video_library import VideoLibrary
+# from gesture_recognition_demo.person_detector import PersonDetector
+# from gesture_recognition_demo.tracker import Tracker
+# from gesture_recognition_demo.action_recognizer import ActionRecognizer
+# from gesture_recognition_demo.visualizer import Visualizer
+# from model_api.performance_metrics import PerformanceMetrics
+
 log.basicConfig(format='[ %(levelname)s ] %(message)s', level=log.DEBUG, stream=sys.stdout)
 
 DETECTOR_OUTPUT_SHAPE = -1, 5
