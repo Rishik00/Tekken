@@ -17,10 +17,15 @@ Welcome to Saradhi AI, your ultimate companion for learning and mastering sign l
 `git clone my-repo-name`
 2. install the dependencies:
 `pip install requirements.txt`
-3. Start the development server using uvicorn: 
-`uvicorn app:app --reload`
-4. Start the front end after configuring the environment settings
-`npm start` 
+3. Create `.env` files according to format provided in `\frontend\.envsample` and `\backend\.envsample`
+4. Start the development server using uvicorn: 
+`uvicorn app:app --host 0.0.0.0 --port 8000 --reload`
+5. Start the front end after configuring the environment settings
+`npx expo run:android --device`
+
+#### Note Before running the command provided in step-4, please login to your firebase admin panel, click `Generate new private key` and save it as `firebase-admin.json` in `/backend`
+<img src="https://github.com/Rishik00/Tekken/assets/96735720/7f57e4d5-8cd3-439c-8424-69a7136e1ad4" alt="Video Upload" width="500" style="margin-right: 10px;">
+
 
 
 ## Features
