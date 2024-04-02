@@ -98,7 +98,7 @@ Saradhi AI's integrated chatbot provides instant assistance and clears doubts ab
 
 - **Frontend**: Developed using **React Native** for a seamless mobile user interface. React Native is an open-source UI software framework created by Meta Platforms, Inc. It is used to develop applications for Android, Android TV, iOS, macOS, tvOS, Web, Windows and UWP by enabling developers to use the React framework along with native platform capabilities.
 
-- **Backend**: Implemented with **FastAPI** to handle server-side logic efficiently.FastAPI is a modern web framework first released in 2018 for building RESTful APIs in Python. It is used for building APIs with Python 3.8+ based on standard Python-type hints. FastAPI is based on Pydantic and uses type hints to validate, serialize and deserialize data.
+- **Backend**: Implemented with **FastAPI** to handle server-side logic efficiently.FastAPI is a modern web framework first released in 2018 for building RESTful APIs in Python. It is used for building APIs with Python 3.8+ based on standard Python-type hints. FastAPI is based on Pydantic and uses type hints to validate, serialize and deserialize data. 
 
 - **Sign Language Recognition**: The models used for Sign Language Recognition are all from Intel **OpenVino**, an open-source software toolkit for optimizing and deploying deep learning models. It enables programmers to develop scalable and efficient AI solutions with relatively few lines of code.  The models supported by the gesture recognition application are:
 	1.  **asl-recognition-00040:** 
@@ -124,6 +124,7 @@ A human gesture recognition model for the American Sign Language (ASL) recogniti
 This is a person detector for the ASL Recognition scenario. It is based on ShuffleNetV2-like backbone that includes depth-wise convolutions to reduce the amount of computation for the 3x3 convolution block and FCOS head.
 
 - **Chatbot**: The two chatbots that are available and ready for use are **Gemini-pro from Google** and **NeuralChat 7B from Intel**. Apart from this many other chatbots have been tested such as Mistral, Zephyr, bert-large (**from intel's extension for transformers library**) and GPT-2. The chatbots hyper parameters have been tuned to be able to handle quries of different lengths related to sign language and can direct users to different sections of our app based on their queries.
+- Along with this, we have finetuned OpenAI's **GPT2** using a custom dataset of 100 question-answer pairs. Kindly checkout our `finetune.py` notebook in the backend directory for more details.
   
 
 ## About Us
