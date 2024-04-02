@@ -8,7 +8,7 @@ from Chat.GPT2.gpt2 import FineTunedGPT2
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from Tekken.backend.Chat.Gemini.gemini import GetGeminiOutput
+from Chat.Gemini.gemini import GetGeminiOutput
 import json
 from dotenv import load_dotenv
 from datetime import datetime
