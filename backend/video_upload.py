@@ -6,18 +6,17 @@ from time import perf_counter
 from intel.toolkit.gesture_function import run_gesture_recognition
 
 app = FastAPI()
+
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 video_dir = os.path.join(BASE_DIR, "temp_videos")
 
 # os.makedirs(video_dir, exist_ok=True)
+
 @app.post("/upload-video-file/")
 async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
-    """
-    A function to handle the upload of a video file, process it for gesture recognition,
-    and return processing results. Parameters include background_tasks of type BackgroundTasks,
-    and file of type UploadFile. Returns JSONResponse with message, labels, upload-time, and performance_time.
-    """
     
     if(not os.path.exists(video_dir)):
         os.makedirs(video_dir, exist_ok=True)

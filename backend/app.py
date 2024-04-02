@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List
 import os
-from NeuralChat7B import NeuralNet7B
+from Chat.NeuralChat7B import NeuralNet7B
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -252,58 +252,232 @@ async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = Fil
     if os.path.exists(video_dir):
         shutil.rmtree(video_dir)
 
-    return JSONResponse(content={"message": "Video received and processing started.", "labels": translated_text, "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
+    return JSONResponse(content={"message": "Video received and processing started.", "labels": list(labels), "upload-time":upload_time, "performance_time": processing_time}, status_code=200)
 
-@app.post("/assess-sign-language/")
-async def assess_sign_language(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
-    """
-    A description of the entire function, its parameters, and its return types.
-    """
-    # Define the expected word for assessment
-    expected_word = "father"
+
+from fastapi import FastAPI, WebSocket
+from aiortc import RTCPeerConnection, MediaStreamTrack, RTCSessionDescription, RTCIceCandidate
+from aiortc.contrib.media import MediaBlackhole, MediaRelay, MediaPlayer, MediaRecorder
+import aiortc.mediastreams as ms
+import uuid
+import json
+import os
+import cv2
+from av import VideoFrame
+ROOT = os.path.dirname(__file__)
+
+app = FastAPI()
+
+relay = MediaRelay()  # Provide the path to where you want to record
+
+# This dictionary stores the peer connections
+peer_connections = {}
+
+import sys
+from pathlib import Path
+import numpy as np
+
+sys.path.append(str(Path(__file__).resolve().parents[2] / 'common/python'))
+sys.path.append(str(Path(__file__).resolve().parents[2] / 'common/python/model_zoo'))
+
+from intel.toolkit.gesture_recognition_demo.common import load_core
+from intel.toolkit.gesture_recognition_demo.video_library import VideoLibrary
+from intel.toolkit.gesture_recognition_demo.person_detector import PersonDetector
+from intel.toolkit.gesture_recognition_demo.tracker import Tracker
+from intel.toolkit.gesture_recognition_demo.action_recognizer import ActionRecognizer
+from intel.toolkit.model_api.performance_metrics import PerformanceMetrics
+
+live_labels = set()
+
+DETECTOR_OUTPUT_SHAPE = -1, 5
+TRACKER_SCORE_THRESHOLD = 0.4
+TRACKER_IOU_THRESHOLD = 0.3
+ACTION_IMAGE_SCALE = 256
+OBJECT_IDS = [ord(str(n)) for n in range(10)]
+action_model = os.path.join(ROOT, "intel", "asl-recognition-0004", "FP16", "asl-recognition-0004.xml")
+detection_model = os.path.join(ROOT, "intel", "person-detection-asl-0001", "FP16", "person-detection-asl-0001.xml")
+class_map_path = os.path.join(ROOT, "intel", "msasl100.json")
+
+def load_class_map( file_path):
+    if file_path is not None and os.path.exists(file_path):
+        with open(file_path, 'r') as input_stream:
+            print("Loading class map from", file_path)
+            data = json.load(input_stream)
+            return dict(enumerate(data))
+    return None
+
+device = 'CPU'
+core = load_core()
+class_map = load_class_map(class_map_path)
+person_detector = PersonDetector(detection_model, device, core, num_requests=2, output_shape=DETECTOR_OUTPUT_SHAPE)
+action_recognizer = ActionRecognizer(action_model, device, core, num_requests=2, img_scale=ACTION_IMAGE_SCALE, num_classes=len(class_map))
+person_tracker = Tracker(person_detector, TRACKER_SCORE_THRESHOLD, TRACKER_IOU_THRESHOLD)
+metrics = PerformanceMetrics()
+action_threshold = 0.8
+
+
+class WebSocketVideoStream:
+    def __init__(self):
+        self.frames = []
+
+    def add_frame(self, frame):
+        self.frames.append(frame)
     
-    # Create a temporary directory to save the uploaded video
-    temp_video_dir = "temp_uploaded_videos"
-    os.makedirs(temp_video_dir, exist_ok=True)
-    video_path = os.path.join(temp_video_dir, file.filename)
+    def len_frame(self):
+        return len(self.frames)
 
-    # Save the uploaded video file
-    with open(video_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    def get_live_frame(self):
+        if self.frames:
+            return self.frames[-1]
+        return None
 
-    # Run gesture recognition on the uploaded video
-    labels = run_gesture_recognition(
-        action_model,
-        detection_model,
-        video_path,
-        class_map_path=class_map_path,
-        device=device,
-        no_show=True
+    def get_batch(self, batch_size):
+        if len(self.frames) >= batch_size:
+            batch = self.frames[-batch_size:]
+            self.frames = self.frames[-16:]
+            return batch
+        return None
+    
+
+video_stream = WebSocketVideoStream()
+
+class VideoTransformTrack(MediaStreamTrack):
+    """
+    A video stream track that transforms frames from another track.
+    """
+
+    kind = "video"
+
+    def __init__(self, track, transform):
+        super().__init__()  # don't forget this!
+        self.track = track
+        self.transform = transform
+
+    async def recv(self):
+        rawFrame = await self.track.recv()
+        frame = rawFrame.to_ndarray(format="bgr24")
+        video_stream.add_frame(frame)
+        # print(action_recognizer.input_length)
+        # print(frame.shape)
+        # print(video_stream.len_frame())
+        batch = video_stream.get_batch(action_recognizer.input_length)
+        try:
+            if batch:
+                print("running")
+                detections, _ = person_tracker.add_frame(frame, len(OBJECT_IDS), {})
+                if detections is not None:
+                    labels_found=set()
+                    for detection in detections:
+                        # print(detection.roi.reshape(-1))
+                        # print("running")
+                        recognizer_result = action_recognizer(batch, detection.roi.reshape(-1))
+                        if recognizer_result is not None:
+                            action_class_id = np.argmax(recognizer_result)
+                            action_score = np.max(recognizer_result)
+                            if action_score >= action_threshold:
+                                action_label = class_map[action_class_id]
+                                labels_found.add(action_label)
+                                print(f'Action ID: {action_class_id}, Score: {action_score}, Label: {action_label}')
+                        else:
+                            print("No recognizer result")
+                    live_labels=labels_found
+                else:
+                    print("No detections")
+            else:
+                print("No batch available")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        return rawFrame
+
+
+
+async def handle_offer(websocket: WebSocket, pc: RTCPeerConnection, message: dict):
+    print(message["offer"]["sdp"])
+    offer = RTCSessionDescription(
+        sdp=message["offer"]["sdp"], type=message["offer"]["type"]
     )
+    await pc.setRemoteDescription(offer)
+    print("set remote description")
 
-    # Check if the expected word is found in the recognized labels
-    if expected_word in labels:
-        result = "You've passed!"
-    else:
-        result = "Sorry, you did not sign the correct word."
+    recorder = MediaBlackhole()
+    
 
-    # Delete the temporary video directory
-    if os.path.exists(temp_video_dir):
-        shutil.rmtree(temp_video_dir)
+    answer = await pc.createAnswer()
+    print(answer.sdp)
+    await pc.setLocalDescription(answer)
 
-    return JSONResponse(content={"message": result}, status_code=200)
+    await websocket.send_text(json.dumps({
+        "type": "answer",
+        "answer": {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
+    }))
 
-# Endpoint to serve family course JSON content
-# @app.get("/family_course")
-# def get_family_course():
-#     return family_links_data
+async def handle_candidate(pc: RTCPeerConnection, message: dict):
+    candidate_info = message["candidate"]["candidate"].split()
+    candidate = RTCIceCandidate(
+        candidate_info[1], candidate_info[0], candidate_info[4], 
+        int(candidate_info[5]), int(candidate_info[3]), candidate_info[2], 
+        candidate_info[7],
+        sdpMid=message["candidate"]["sdpMid"], sdpMLineIndex=message["candidate"]["sdpMLineIndex"]
+    )
+    await pc.addIceCandidate(candidate)
 
-# # Endpoint to serve common course JSON content
-# @app.get("/common_course")
-# def get_common_course():
-#     return common_links_data
+async def handle_end_track(websocket: WebSocket, recorder: MediaBlackhole):
+    await websocket.send_text(json.dumps({"type": "track_end"}))
+    await recorder.stop()
+    print("Track ended")
 
-# # Endpoint to serve question course JSON content
-# @app.get("/question_course")
-# def get_question_course():
-#     return question_links_data
+
+@app.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    await websocket.accept()
+    pc = RTCPeerConnection()
+    peer_connections[client_id] = pc
+
+    @pc.on("track")
+    async def on_track(track):
+        if track.kind == "video":
+            pc.addTrack(
+                VideoTransformTrack(
+                    relay.subscribe(track), transform="cartoon"
+                )
+            )
+              # Or use MediaRecorder to record
+            recorder = MediaBlackhole()
+            # recorder = MediaRecorder("sample.mp4")
+            recorder.addTrack(VideoTransformTrack(relay.subscribe(track), transform="cartoon"))
+            await recorder.start()
+            print("Video track added and recorder started")
+            @track.on("ended")
+            async def on_ended():
+                await recorder.stop()
+
+    async for message in websocket.iter_text():
+        message = json.loads(message)
+
+        if message["type"] == "offer":
+            await handle_offer(websocket, pc, message)
+        elif message["type"] == "candidate":
+            await handle_candidate(pc, message)
+        elif message["type"] == "end_track":
+            recorder = MediaBlackhole()
+            await handle_end_track(websocket, recorder)
+
+    # Clean up after the connection is closed
+    del peer_connections[client_id]
+    await pc.close()
+
+# @app.on_event("shutdown")
+# async def on_shutdown():
+#     # Close all peer connections
+#     for pc in peer_connections.values():
+#         await pc.close()
+
+
+@app.get('/live_labels')
+def get_live_labels():
+    return JSONResponse({"labels" : live_labels})
+
+# Run server
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload="True")
