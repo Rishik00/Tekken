@@ -30,13 +30,13 @@ export default function LandingScreen() {
             // Handle navigation to respective feature based on the feature name
             switch (feature) {
                 case "Sign Language Translation":
-                    router.push("/(tabs)");
+                    router.push("/(tabs)/chatbot");
                     break;
                 case "Chat Bot":
                     router.push("/(tabs)/chatbot");
                     break;
                 case "Learn Sign Language":
-                    router.push("/(tabs)");
+                    router.push("/(tabs)/chatbot");
                     break;
                 default:
                     break;
@@ -54,7 +54,7 @@ export default function LandingScreen() {
     return (
         <SafeAreaView className="flex flex-1 bg-[#E3F4FE]">
             <Text className="px-4 mt-12 text-xl text-slate-800 mb-[-10] z-30">
-                Sign Language Translator
+                Saradhi AI
             </Text>
             <View className="overflow-hidden ">
                 <ImageBackground
@@ -84,11 +84,11 @@ export default function LandingScreen() {
                                         "Sign Language Translation"
                                     )
                                 }
-                                className={`flex flex-col items-center w-[30%] h-28 p-3 mt-4 ${
+                                className={`flex flex-col items-center border-[0.5px] border-slate-400  w-[30%] h-28 p-3 mt-4 ${
                                     isStreakP
                                         ? "bg-gray-100 dark:bg-slate-500"
                                         : "bg-gray-50 dark:bg-slate-600"
-                                } shadow-lg rounded-xl`}
+                                } shadow rounded-xl`}
                                 onPressIn={() => setIsStreakP(true)}
                                 onPressOut={() => setIsStreakP(false)}
                             >
@@ -104,7 +104,7 @@ export default function LandingScreen() {
                                         "Sign Language Translation"
                                     )
                                 }
-                                className={`flex flex-col items-center w-[30%] h-28 p-3 mt-4 ${
+                                className={`flex flex-col items-center w-[30%] border-[0.5px] border-slate-400 h-28 p-3 mt-4 ${
                                     isLTP
                                         ? "bg-gray-100 dark:bg-slate-500"
                                         : "bg-gray-50 dark:bg-slate-600"
@@ -120,7 +120,7 @@ export default function LandingScreen() {
                             </Pressable>
                             <Pressable
                                 onPress={() => handleFeaturePress("Chat Bot")}
-                                className={`flex flex-col items-center w-[30%] h-28 p-3 mt-4 ${
+                                className={`flex flex-col items-center w-[30%] border-[0.5px] border-slate-400 h-28 p-3 mt-4 ${
                                     isCBP
                                         ? "bg-gray-100 dark:bg-slate-500"
                                         : "bg-gray-50 dark:bg-slate-600"
@@ -148,7 +148,7 @@ export default function LandingScreen() {
                     onPress={() =>
                         handleFeaturePress("Sign Language Translation")
                     }
-                    className={`flex flex-row items-center w-full mt-4 overflow-hidden ${
+                    className={`flex flex-row items-center w-full mt-4 border-[0.5px] border-slate-400 overflow-hidden ${
                         isF1P
                             ? "bg-pink-300 dark:bg-slate-500"
                             : "bg-pink-200 shadow-lg dark:bg-slate-600"
@@ -166,7 +166,7 @@ export default function LandingScreen() {
                 </Pressable>
                 <Pressable
                     onPress={() => handleFeaturePress("Chat Bot")}
-                    className={`flex flex-row items-center w-full mt-4 overflow-hidden ${
+                    className={`flex flex-row items-center w-full mt-4 border-[0.5px] border-slate-400 overflow-hidden ${
                         isF2P
                             ? "bg-indigo-300 dark:bg-slate-500"
                             : "bg-indigo-200 shadow-lg dark:bg-slate-600"
@@ -182,7 +182,7 @@ export default function LandingScreen() {
                 </Pressable>
                 <Pressable
                     onPress={() => handleFeaturePress("Learn Sign Language")}
-                    className={`flex flex-row items-center w-full mt-4 overflow-hidden ${
+                    className={`flex flex-row items-center w-full mt-4 border-[0.5px] border-slate-400 overflow-hidden ${
                         isF3P
                             ? "bg-[#E9DFC9] dark:bg-slate-500"
                             : "bg-[#FFF5E4]  shadow-lg dark:bg-slate-600"

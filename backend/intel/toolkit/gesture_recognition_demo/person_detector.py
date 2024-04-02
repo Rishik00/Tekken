@@ -18,6 +18,7 @@ import cv2
 import numpy as np
 
 from intel.toolkit.gesture_recognition_demo.common import IEModel
+# from gesture_recognition_demo.common import IEModel
 
 
 class PersonDetector(IEModel):
