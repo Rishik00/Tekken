@@ -31,6 +31,8 @@ Welcome to Saradhi AI, your ultimate companion for learning and mastering sign l
 ## Flow Diagram 🔄📊
 
 The flow diagram illustrates the sequential steps and interactions within Saradhi AI, ensuring a smooth and efficient workflow. Let's delve into the key components:
+<img width="2037" alt="Saradhi Ai flowchart" src="https://github.com/Rishik00/Tekken/assets/95875573/dce9441e-f161-40ec-92a5-2a08bc8a0225">
+
 
 
 ### User Interaction 🤳🗣️:
