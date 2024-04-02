@@ -3,12 +3,12 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List
 import os
-from Chat.NeuralChat7B import NeuralNet7B
-from Chat.gpt2 import FineTunedGPT2
+from Chat.IntelChat.NeuralChat7B import NeuralNet7B
+from Chat.GPT2.gpt2 import FineTunedGPT2
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from gemini import GetGeminiOutput
+from Tekken.backend.Chat.Gemini.gemini import GetGeminiOutput
 import json
 from dotenv import load_dotenv
 from datetime import datetime
