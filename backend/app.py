@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import List
 import os
 from Chat.NeuralChat7B import NeuralNet7B
+from Chat.gpt2 import FineTunedGPT2
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -23,7 +24,7 @@ from intel.toolkit.gesture_function import run_gesture_recognition
 app = FastAPI()
 # Initialize NeuralNet
 nn = NeuralNet7B()
-
+gpt2 = FineTunedGPT2()
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("./firebase-admin.json")
 firebase_admin.initialize_app(cred)
