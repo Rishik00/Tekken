@@ -3,6 +3,10 @@
 # Project Description: 
 ## Saradhi AI: Sign Language Learning Mobile App 🤟
 ## Intel's ToolKits used: Intel's OpenVino toolkit, Intel Developer cloud
+
+## Project Demo: https://youtu.be/Rm8zwcfuMgI
+## Project Demo: 
+
 Welcome to Saradhi AI, your ultimate companion for learning and mastering sign language made possible through Intel. Saradhi AI combines cutting-edge technology with comprehensive learning resources to make sign language accessible to everyone. With real-time sign language translation, informative courses, a searchable database, and a helpful assistant, Saradhi AI is your one-stop solution for sign language learning.
 
 
@@ -39,9 +43,10 @@ The flow diagram illustrates the sequential steps and interactions within Saradh
 
 Users interact with Saradhi AI through the mobile app, providing input via text, voice, or video. 
 <div style="display: flex;">
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/d4677053-6ddf-412f-babb-121689d16df7" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/d4677053-6ddf-412f-babb-121689d16df7" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/3fe841b1-c6c9-4522-ac16-f321773fb5f9" alt="Video Upload" width="200" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/7b32679f-d7da-408b-91e0-6f9c9bf19895" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
+
 
 
 
@@ -56,8 +61,8 @@ https://github.com/Rishik00/Tekken/assets/96735720/9fed7771-0751-42e3-a5b1-3ae08
 Users can upload pre-recorded videos of sign language gestures for translation. Saradhi AI analyzes the uploaded videos using Intel's OpenVino ASL Recognition 004 model, providing accurate translations and enhancing accessibility.
 
 <div style="display: flex; justify-content: center;">
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/50ef1265-4df8-4cb8-a677-16e06e0123f6" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/337cc623-6730-4033-8b83-673abb6352c2" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/bd6cf102-8e2f-45a5-a03b-fb63f08d6900" alt="Video Upload" width="200" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/89771063-2c55-4f88-a295-70d41b57a2b7" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
 
@@ -67,7 +72,7 @@ Saradhi AI offers an informative course on learning sign language, featuring int
 
 <div style="display: flex;">
     <img src="https://github.com/Rishik00/Tekken/assets/96735720/aa764236-466e-4ac3-b35b-4f49cca9d3be" alt="Video Upload" width="200" style="margin-right: 10px;"> 
-    <img src="" alt="Video Upload" width="200" style="margin-right: 10px;">
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/fff1258e-bb3d-4a0e-afa7-80dfe9fe570f" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
 
@@ -97,7 +102,8 @@ Saradhi AI's integrated chatbot provides instant assistance and clears doubts ab
 
   
 
-## Technologies Used
+## Technologies Used!
+
 
 - **Frontend**: Developed using **React Native** for a seamless mobile user interface. React Native is an open-source UI software framework created by Meta Platforms, Inc. It is used to develop applications for Android, Android TV, iOS, macOS, tvOS, Web, Windows and UWP by enabling developers to use the React framework along with native platform capabilities.
 
