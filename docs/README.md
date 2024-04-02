@@ -86,9 +86,9 @@ The search engine allows users to query specific words or phrases in American Si
 ### Chatbot for Clearing Basic Doubts About ASL:
 
 Saradhi AI's integrated chatbot provides instant assistance and clears doubts about sign language. Powered by Intel-Hugging Face Neural Chat 7B model, the chatbot offers intelligent responses to user queries, ensuring a smooth learning experience. We have integrated the following three models for our chatbot feature: 
-	1. Intel's NeuralChat 7B 
- 	2. OpenAI's GPT2 (Finetuned)
-  	3. Google's Gemini Pro
+1. **Intel's NeuralChat 7B**
+2. **OpenAI's GPT2 (Finetuned)**
+3. **Google's Gemini Pro**
 
 <div style="display: flex;">
     <img src="https://github.com/Rishik00/Tekken/assets/96735720/dbca1fee-75af-4761-b95c-3add0e227e13" alt="Video Upload" width="200" style="margin-right: 10px;"> 
