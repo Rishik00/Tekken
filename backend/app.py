@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List
 import os
-from NeuralChat7B import NeuralNet7B
+from Chat.NeuralChat7B import NeuralNet7B
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
