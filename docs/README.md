@@ -76,7 +76,7 @@ Users can upload pre-recorded videos of sign language gestures for translation. 
 Saradhi AI offers an informative course on learning sign language, featuring interactive lessons and built-in assignments. Users can progress through the course at their own pace, receiving personalized feedback powered by Intel's OpenVino ASL Recognition 004 model.
 
 <div style="display: flex;">
-    <img src="https://github.com/Rishik00/Tekken/assets/96735720/aa764236-466e-4ac3-b35b-4f49cca9d3be" alt="Video Upload" width="200" style="margin-right: 10px;"> 
+    <img src="https://github.com/Rishik00/Tekken/assets/96735720/bd899597-a903-45c0-888d-de20ff67cbcb" alt="Video Upload" width="200" style="margin-right: 10px;"> 
     <img src="https://github.com/Rishik00/Tekken/assets/96735720/fff1258e-bb3d-4a0e-afa7-80dfe9fe570f" alt="Video Upload" width="200" style="margin-right: 10px;">
 </div>
 
